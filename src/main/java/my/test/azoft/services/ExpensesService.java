@@ -6,8 +6,11 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -113,5 +116,9 @@ public class ExpensesService {
 
     public <S extends Expenses> boolean exists(Example<S> example) {
         return expensesRepo.exists(example);
+    }
+
+    public BigDecimal getSumm(int userId, Date start, Date end) {
+        return expensesRepo.getSumm(userId, start, end);
     }
 }
