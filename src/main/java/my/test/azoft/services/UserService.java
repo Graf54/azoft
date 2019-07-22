@@ -2,12 +2,15 @@ package my.test.azoft.services;
 
 import my.test.azoft.model.User;
 import my.test.azoft.repos.UserRepo;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepo userRepo;
 
     public <S extends User> S save(S s) {
@@ -56,5 +59,16 @@ public class UserService {
 
     public UserService(UserRepo userRepo) {
         this.userRepo = userRepo;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        User user = userRepo.findByLogin(s);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        return user;
     }
 }
