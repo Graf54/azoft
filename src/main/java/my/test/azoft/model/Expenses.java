@@ -1,9 +1,9 @@
 package my.test.azoft.model;
 
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -22,5 +22,5 @@ public class Expenses {
     private String description;
     @Column(length = 255)
     private String comment;
-    private double value;
+    private BigDecimal value;
 }
