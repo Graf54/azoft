@@ -1,4 +1,4 @@
-package my.test.azoft.controller;
+package my.test.azoft.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
