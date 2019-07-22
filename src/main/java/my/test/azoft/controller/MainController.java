@@ -1,5 +1,6 @@
 package my.test.azoft.controller;
 
+import my.test.azoft.model.Calculate;
 import my.test.azoft.model.Expenses;
 import my.test.azoft.services.ExpensesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,10 @@ public class MainController {
     public String index(Model model) {
         Iterable<Expenses> all = expensesService.findAll();
         model.addAttribute("expenses", all);
+        Calculate calculate = new Calculate();
+        calculate.setStart(new Date());
+        calculate.setEnd(new Date());
+        calculate.setTotal(0.0);
         return "index";
     }
 
@@ -47,12 +52,9 @@ public class MainController {
     }
 
     @GetMapping({"/calc"})
-    public String calculate(@ModelAttribute("expenses") Expenses expenses,
-                            @RequestParam("dateS") String date,
+    public String calculate(@RequestParam("dateS") String date,
                             @RequestParam("timeS") String time) {
         Date date1 = getDate(date, time);
-        expenses.setDate(date1);
-        expensesService.save(expenses);
         return "redirect:/index";
     }
 
