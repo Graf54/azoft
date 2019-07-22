@@ -1,14 +1,3 @@
-User
--reg
--enter
-UserRole
--admin
--manager
--user
-Expenses
--crud
-
-
 Тестовое задание на позицию Java backend developer
 Задача: Необходимо реализовать WEB приложение - трекер расходов.
 Описание:
