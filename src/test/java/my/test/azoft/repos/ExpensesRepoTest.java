@@ -32,12 +32,12 @@ public class ExpensesRepoTest {
         User saveUser = userRepo.save(user);
         Expenses expenses = createExpenses(saveUser, 12.2);
         expensesRepo.save(expenses);
-        BigDecimal summ = expensesRepo.getSumm(saveUser.getId(), new Date(0), new Date());
+        BigDecimal summ = expensesRepo.getSumm(saveUser.getId(), new Date(0), new Date()).get();
 
         Assert.assertEquals(12.2, summ.doubleValue(), 0.0);
 
         expensesRepo.save(createExpenses(saveUser, 12.2));
-        summ = expensesRepo.getSumm(saveUser.getId(), new Date(0), new Date());
+        summ = expensesRepo.getSumm(saveUser.getId(), new Date(0), new Date()).get();
 
         Assert.assertEquals(24.4, summ.doubleValue(), 0.0);
     }
