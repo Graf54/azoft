@@ -3,7 +3,7 @@
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Login :</label>
         <div class="col-sm-6">
-            <input type="text" name="login" value="<#if user??>${user.login}</#if>"
+            <input type="text" name="username" value="<#if user??>${user.username}</#if>"
                    min="0" max="50"
                    class="form-control ${(usernameError??)?string('is-invalid', '')}"
                    required

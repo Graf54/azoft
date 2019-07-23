@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -16,7 +17,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -24,10 +25,12 @@ public class User implements UserDetails {
 
     @Column(length = 50)
     @NotBlank(message = "Login cannot be empty")
-    private String login;
+    private String username;
+
     @Column(length = 255)
     @NotBlank(message = "Password cannot be empty")
     private String password;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -36,7 +39,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return username;
     }
 
     @Override
@@ -57,5 +60,26 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public boolean isAdmin() {
+        return roles.stream().anyMatch(role -> role.getId() == 1);
+    }
+
+    public boolean isManager() {
+        return roles.stream().anyMatch(role -> role.getId() == 2);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

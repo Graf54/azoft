@@ -4,7 +4,6 @@ import my.test.azoft.model.Calculate;
 import my.test.azoft.model.Expenses;
 import my.test.azoft.model.User;
 import my.test.azoft.services.ExpensesService;
-import my.test.azoft.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -23,46 +22,69 @@ public class TrackerController {
     @Autowired
     private ExpensesService expensesService;
 
-    @GetMapping({"/tracker"})
-    public String index(Model model) {
-        Iterable<Expenses> all = expensesService.findAll();
+    @GetMapping
+    public String tracker(Model model,
+                          @AuthenticationPrincipal User user) {
+        Iterable<Expenses> all = expensesService.findAllByUserOrderByDate(user);
         model.addAttribute("expenses", all);
+        setCalculate(model, user, new Date(0), new Date());
+        return "tracker";
+    }
 
+    private void setCalculate(Model model, User user, Date startDate, Date endDate) {
         Calculate calculate = new Calculate();
         calculate.setStart(new Date());
         calculate.setEnd(new Date());
-        double total = expensesService.getSumm(1, new Date(0), new Date()).orElse(new BigDecimal(0.0)).doubleValue();
+        double total = expensesService.getSumm(user.getId(), startDate, endDate).orElse(new BigDecimal(0.0)).doubleValue();
         calculate.setTotal(total);
         model.addAttribute("calc", calculate);
-        return "index";
     }
 
-    @GetMapping({"/edit"})
-    public String edit(@RequestParam int id, Model model) {
-        List<Expenses> all = expensesService.findAll();
+    @GetMapping("/edit")
+    public String edit(@RequestParam int id,
+                       Model model,
+                       @AuthenticationPrincipal User user) {
+        List<Expenses> all = expensesService.findAllByUserOrderByDate(user);
         model.addAttribute("idEdit", id);
         model.addAttribute("expenses", all);
-        return "index";
+        setCalculate(model, user, new Date(0), new Date());
+        return "tracker";
     }
 
-    @PostMapping({"/edit"})
+    @PostMapping("/edit")
     public String edit(@ModelAttribute("expenses") Expenses expenses,
                        @RequestParam("dateS") String date,
-                       @RequestParam("timeS") String time) {
+                       @RequestParam("timeS") String time,
+                       @AuthenticationPrincipal User user) {
         Date date1 = getDate(date, time);
         expenses.setDate(date1);
         expensesService.save(expenses);
-        return "redirect:/index";
+        return "redirect:/tracker";
     }
 
-    @GetMapping({"/calc"})
-    public String calculate() {
+    @GetMapping("/delete")
+    public String delete(@RequestParam("id") int id,
+                         @AuthenticationPrincipal User user) {
+        expensesService.deleteById(id, user);
+        return "redirect:/tracker";
+    }
 
-        return "redirect:/index";
+    @GetMapping("/calc")
+    public String calculate(Model model,
+                            @RequestParam("dateS") String start,
+                            @RequestParam("dateE") String end,
+                            @AuthenticationPrincipal User user
+    ) {
+        Iterable<Expenses> all = expensesService.findAllByUserOrderByDate(user);
+        model.addAttribute("expenses", all);
+        Date startDate = getDate(start);
+        Date endDate = getDate(end);
+        setCalculate(model, user, startDate, endDate);
+        return "tracker";
     }
 
 
-    @PostMapping({"/add"})
+    @PostMapping("/add")
     public String add(
             @AuthenticationPrincipal User user,
             @ModelAttribute("expenses") Expenses expenses,
@@ -73,13 +95,23 @@ public class TrackerController {
         expenses.setDate(date1);
         expenses.setUser(user);
         expensesService.save(expenses);
-        return "redirect:/index";
+        return "redirect:/tracker";
     }
 
     private Date getDate(String date, String time) {
         Date date1;
         try {
             date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(date + " " + time);
+        } catch (ParseException e) {
+            date1 = new Date();
+        }
+        return date1;
+    }
+
+    private Date getDate(String datetimeLocal) {
+        Date date1;
+        try {
+            date1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").parse(datetimeLocal);
         } catch (ParseException e) {
             date1 = new Date();
         }

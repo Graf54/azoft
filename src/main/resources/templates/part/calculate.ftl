@@ -10,12 +10,13 @@
     </thead>
     <tbody>
     <tr>
-        <form action="/calc" name="calculate" method="get">
+        <form action="/tracker/calc" name="calculate" method="get">
             <td>
                 <div class="form-group">
                     <input type="datetime-local" required
                            class="form-control" id="dateS" name="dateS"
-                           value="${calc.start?datetime?string("dd.MM.yy HH:mm:ss")!}">
+<#--                           value="${calc.start?datetime?string("dd.MM.yy HH:mm:ss")!}">-->
+                           value="">
                 </div>
 
             </td>
@@ -23,7 +24,8 @@
                 <div class="form-group">
                     <input type="datetime-local" required
                            class="form-control" id="dateE" name="dateE"
-                           value="${calc.end?datetime?string("dd.MM.yy HH:mm:ss")!}">
+<#--                           value="${calc.end?datetime?string("dd.MM.yy HH:mm:ss")!}">-->
+                           value="">
                 </div>
 
             </td>

@@ -1,3 +1,4 @@
+<#assign path="/tracker">
 <div class="container">
     <div>
         <h3>Расходы</h3>
@@ -15,15 +16,15 @@
         </thead>
         <tbody>
         <tr>
-            <#assign date = .now>
-            <form action="/add" name="expenses" method="post">
+            <form action="/tracker/add" name="expenses" method="post">
                 <input type="hidden" id="id" name="id" value="0">
                 <td>
                     <div class="form-group">
                         <input type="date" required
                                class="form-control" id="dateS" name="dateS"
-                                <#--                                   placeholder="Введите день"-->
-                               value="${.now?date?string("dd.MM.yyyy")}">
+                               placeholder="Введите день"
+                               value="">
+                        <#--                               value="${.now?date?string("yyyy-dd-MM")}">-->
                     </div>
                 </td>
                 <td>
@@ -44,7 +45,7 @@
                 </td>
                 <td>
                     <div class="form-group">
-                        <input type="number" step="0.01" min="0.00" max="1000000000.00" class="form-control"
+                        <input type="number" step="0.01" min="0.00" max="1000000.00" class="form-control"
                                id="value"
                                name="value"
                                required
@@ -55,11 +56,11 @@
                 <td>
                     <div class="form-group">
                         <input type="text" class="form-control" id="comment" name="comment"
-                               placeholder="Введите коммент"
+                               placeholder="Введите комментарий"
                                value="">
                     </div>
                 </td>
-
+                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                 <td>
                     <button type="submit" class="btn btn-primary">Добавить</button>
                 </td>
@@ -91,6 +92,7 @@
                             <div class="form-group">
                                 <input type="text" class="form-control" id="description"
                                        name="description"
+                                       maxlength="255"
                                        placeholder="Введите описание"
                                        value="${exp.description!}">
                             </div>
@@ -102,17 +104,18 @@
                                        name="value"
                                        required
                                        placeholder="Введите стоимость"
-                                       value="${exp.description!}">
+                                       value="${exp.value!}">
                             </div>
                         </td>
                         <td>
                             <div class="form-group">
                                 <input type="text" class="form-control" id="comment" name="comment"
                                        placeholder="Введите комментарий"
-                                       value="${exp.description!}">
+                                       maxlength="255"
+                                       value="${exp.comment!}">
                             </div>
                         </td>
-
+                        <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                         <td>
                             <button type="submit" class="btn btn-primary">Изменить</button>
                         </td>
@@ -124,9 +127,9 @@
                     <td>${exp.value}</td>
                     <td>${exp.comment}</td>
                     <td>
-                        <a href="/delete?id=${exp.id}" class="btn btn-danger float-right mr-2"
+                        <a href="/tracker/delete?id=${exp.id}" class="btn btn-danger float-right mr-2"
                            role="button">Delete</a>
-                        <a href="/edit?id=${exp.id}" class="btn btn-secondary float-right mr-2"
+                        <a href="/tracker/edit?id=${exp.id}" class="btn btn-secondary float-right mr-2"
                            role="button">Edit</a>
                     </td>
                 </#if>

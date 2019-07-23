@@ -1,12 +1,12 @@
 package my.test.azoft.services;
 
 import my.test.azoft.model.Expenses;
+import my.test.azoft.model.User;
 import my.test.azoft.repos.ExpensesRepo;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,6 +20,10 @@ public class ExpensesService {
 
     public ExpensesService(ExpensesRepo expensesRepo) {
         this.expensesRepo = expensesRepo;
+    }
+
+    public List<Expenses> findAllByUserOrderByDate(User user) {
+        return expensesRepo.findAllByUserOrderByDate(user);
     }
 
     public List<Expenses> findAll() {
@@ -86,8 +90,10 @@ public class ExpensesService {
         return expensesRepo.count();
     }
 
-    public void deleteById(Integer integer) {
-        expensesRepo.deleteById(integer);
+    public void deleteById(int id, User user) {
+        if (expensesRepo.findByIdAndUser(id, user).isPresent()) {
+            expensesRepo.deleteById(id);
+        }
     }
 
     public void delete(Expenses expenses) {

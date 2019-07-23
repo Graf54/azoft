@@ -27,7 +27,7 @@ public class ExpensesRepoTest {
     @Test
     public void getSumm() {
         User user = new User();
-        user.setLogin("");
+        user.setUsername("");
         user.setPassword("");
         User saveUser = userRepo.save(user);
         Expenses expenses = createExpenses(saveUser, 12.2);
@@ -54,7 +54,7 @@ public class ExpensesRepoTest {
     @Test
     public void findById() {
         User user = new User();
-        user.setLogin("");
+        user.setUsername("");
         user.setPassword("");
         User save = userRepo.save(user);
         Expenses expenses = createExpenses(save, 12.2);

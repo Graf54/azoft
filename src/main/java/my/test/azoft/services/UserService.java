@@ -27,7 +27,7 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean createUser(User user) {
-        if (findByLogin(user.getLogin()).isPresent()) {
+        if (findByLogin(user.getUsername()).isPresent()) {
             return false;
         }
 
@@ -40,7 +40,7 @@ public class UserService implements UserDetailsService {
     }
 
     public Optional<User> findByLogin(String login) {
-        return userRepo.findByLogin(login);
+        return userRepo.findByUsername(login);
     }
 
     public <S extends User> S save(S s) {
@@ -89,7 +89,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        Optional<User> user = userRepo.findByLogin(s);
+        Optional<User> user = userRepo.findByUsername(s);
         if (!user.isPresent()) {
             throw new UsernameNotFoundException("User not found");
         }

@@ -28,16 +28,31 @@ public class UserServiceTest {
         createRole(1, "Admin");
         createRole(2, "Manager");
         createRole(3, "User");
-        
-        Assert.assertEquals(3, roleService.count());
-        User user = new User();
-        user.setLogin("login");
-        user.setPassword("test");
-        userService.createUser(user);
-        Optional<User> login = userService.findByLogin("login");
-        Assert.assertEquals(login.get().getLogin(), user.getLogin());
-        Assert.assertTrue(login.get().getRoles().stream().anyMatch(role -> role.getId() == 3));
 
+        Assert.assertEquals(3, roleService.count());
+
+        String login = "username";
+        User user = getUser(login, "pass");
+        userService.createUser(user);
+        Optional<User> foundUser = userService.findByLogin(login);
+        Assert.assertEquals(foundUser.get().getUsername(), user.getUsername());
+        Assert.assertTrue(foundUser.get().getRoles().stream().anyMatch(role -> role.getId() == 3));
+
+        login = "user2";
+        user = getUser("user2", "pass");
+        userService.createUser(user);
+
+        foundUser = userService.findByLogin(login);
+        Assert.assertEquals(foundUser.get().getUsername(), user.getUsername());
+        Assert.assertTrue(foundUser.get().getRoles().stream().anyMatch(role -> role.getId() == 3));
+        Assert.assertEquals(userService.count(), 2);
+    }
+
+    private User getUser(String name, String pass) {
+        User user = new User();
+        user.setUsername(name);
+        user.setPassword(pass);
+        return user;
     }
 
     private void createRole(int id, String name) {
