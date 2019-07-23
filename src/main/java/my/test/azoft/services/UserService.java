@@ -10,9 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @Transactional
@@ -31,14 +30,11 @@ public class UserService implements UserDetailsService {
         if (findByLogin(user.getLogin()).isPresent()) {
             return false;
         }
-        /*Set<Role> roles = new HashSet<>();
+
         Role userRole = roleService.findById(3).get();
-        roles.add(userRole);*/
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        //todo fix this
+        user.setRoles(Collections.singleton(userRole));
         save(user);
-        /*user.setRoles(roles);
-        save(user);*/
         return true;
 
     }

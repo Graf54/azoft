@@ -21,8 +21,6 @@ import java.util.Map;
 public class RegistrationController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private RoleService roleService;
 
     @GetMapping
     public String registration() {
