@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.Set;
 
@@ -19,14 +20,16 @@ public class User implements UserDetails {
     @JoinTable(name = "user_roles")
     private Set<Role> roles;
 
-    @Column(length = 255)
+    @Column(length = 50)
+    @NotBlank(message = "Login cannot be empty")
     private String login;
     @Column(length = 255)
+    @NotBlank(message = "Password cannot be empty")
     private String password;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return getRoles();
     }
 
     @Override

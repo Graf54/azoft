@@ -118,7 +118,7 @@ public class ExpensesService {
         return expensesRepo.exists(example);
     }
 
-    public BigDecimal getSumm(int userId, Date start, Date end) {
+    public Optional<BigDecimal> getSumm(int userId, Date start, Date end) {
         return expensesRepo.getSumm(userId, start, end);
     }
 }

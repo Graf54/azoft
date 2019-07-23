@@ -29,6 +29,5 @@ build/
 
 ### VS Code ###
 .vscode/
-/src/main/resources/templates/
 /azoft.mv.db
 /azoft.lock.db

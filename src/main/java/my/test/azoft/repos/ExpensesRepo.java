@@ -7,9 +7,10 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Optional;
 
 @Repository
 public interface ExpensesRepo extends JpaRepository<Expenses, Integer> {
     @Query(value = "select (sum(EXPENSES.VALUE)) FROM EXPENSES where USER_ID = ?1 and DATE > ?2 and DATE < ?3", nativeQuery = true)
-    BigDecimal getSumm(int userId, Date start, Date end);
+    Optional<BigDecimal> getSumm(int userId, Date start, Date end);
 }
