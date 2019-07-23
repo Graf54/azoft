@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Entity
@@ -17,8 +17,10 @@ public class User implements UserDetails {
     private int id;
 
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles")
-    private Set<Role> roles;
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Role> roles;
 
     @Column(length = 50)
     @NotBlank(message = "Login cannot be empty")
