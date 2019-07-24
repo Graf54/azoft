@@ -58,6 +58,7 @@ public class TrackerController {
                        @AuthenticationPrincipal User user) {
         Date date1 = getDate(date, time);
         expenses.setDate(date1);
+        expenses.setUser(user);
         expensesService.save(expenses);
         return "redirect:/tracker";
     }

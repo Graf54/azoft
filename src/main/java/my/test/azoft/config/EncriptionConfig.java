@@ -10,8 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class EncriptionConfig {
     @Bean
     public PasswordEncoder getPasswordEncoder() {
-        // TODO: 23.07.2019 make normal Encoder 
-        return NoOpPasswordEncoder.getInstance();
-//        return new BCryptPasswordEncoder(8);
+        return new BCryptPasswordEncoder(8);
     }
 }

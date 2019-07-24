@@ -22,6 +22,18 @@ public class ExpensesService {
         this.expensesRepo = expensesRepo;
     }
 
+    public Optional<BigDecimal> getAverage(int userId, Date start, Date end) {
+        return expensesRepo.getAverage(userId, start, end);
+    }
+
+    public Optional<Expenses> findByIdAndUser(int id, User user) {
+        return expensesRepo.findByIdAndUser(id, user);
+    }
+
+    public void deleteById(Integer integer) {
+        expensesRepo.deleteById(integer);
+    }
+
     public List<Expenses> findAllByUserOrderByDate(User user) {
         return expensesRepo.findAllByUserOrderByDate(user);
     }

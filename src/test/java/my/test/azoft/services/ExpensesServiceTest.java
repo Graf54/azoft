@@ -1,4 +1,4 @@
-package my.test.azoft.repos;
+package my.test.azoft.services;
 
 import my.test.azoft.model.Expenses;
 import my.test.azoft.model.User;
@@ -18,26 +18,64 @@ import java.util.Date;
 @SpringBootTest
 @TestPropertySource("/application-test.properties")
 @Transactional
-public class ExpensesRepoTest {
+public class ExpensesServiceTest {
     @Autowired
-    ExpensesRepo expensesRepo;
+    ExpensesService expensesService;
+
     @Autowired
-    UserRepo userRepo;
+    UserService userService;
+
+    @Test
+    public void getAverage() {
+    }
+
+    @Test
+    public void findById(){
+        User user = new User();
+        user.setUsername("");
+        user.setPassword("");
+        User save = userService.save(user);
+        Expenses expenses = createExpenses(save, 12.2);
+        expensesService.save(expenses);
+        Expenses one = expensesService.getOne(expenses.getId());
+
+        Assert.assertEquals(12.2, one.getValue().doubleValue(), 0.0);
+    }
+
+    @Test
+    public void findByIdAndUser() {
+    }
+
+    @Test
+    public void deleteById() {
+    }
+
+    @Test
+    public void findAll() {
+    }
+
+    @Test
+    public void findAll1() {
+    }
+
+    @Test
+    public void save() {
+    }
 
     @Test
     public void getSumm() {
         User user = new User();
         user.setUsername("");
         user.setPassword("");
-        User saveUser = userRepo.save(user);
+        User saveUser = userService.save(user);
         Expenses expenses = createExpenses(saveUser, 12.2);
-        expensesRepo.save(expenses);
-        BigDecimal summ = expensesRepo.getSumm(saveUser.getId(), new Date(0), new Date()).get();
+        expensesService.save(expenses);
+        BigDecimal summ = expensesService.getSumm(saveUser.getId(), new Date(0), new Date()).get();
 
         Assert.assertEquals(12.2, summ.doubleValue(), 0.0);
 
-        expensesRepo.save(createExpenses(saveUser, 12.2));
-        summ = expensesRepo.getSumm(saveUser.getId(), new Date(0), new Date()).get();
+        expensesService.save(createExpenses(saveUser, 12.2));
+        summ = expensesService.getSumm(saveUser.getId(), new Date(0), new Date()).get();
 
         Assert.assertEquals(24.4, summ.doubleValue(), 0.0);
     }
@@ -49,18 +87,5 @@ public class ExpensesRepoTest {
         expenses.setValue(new BigDecimal(value));
         expenses.setUser(save);
         return expenses;
-    }
-
-    @Test
-    public void findById() {
-        User user = new User();
-        user.setUsername("");
-        user.setPassword("");
-        User save = userRepo.save(user);
-        Expenses expenses = createExpenses(save, 12.2);
-        expensesRepo.save(expenses);
-        Expenses one = expensesRepo.getOne(expenses.getId());
-
-        Assert.assertEquals(12.2, one.getValue().doubleValue(), 0.0);
     }
 }
