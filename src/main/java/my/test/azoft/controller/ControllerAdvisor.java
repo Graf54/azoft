@@ -8,6 +8,6 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 public class ControllerAdvisor {
     @ExceptionHandler(NoHandlerFoundException.class)
     public String handle(Exception ex) {
-        return "redirect:/index";//this is view name
+        return "index";//this is view name
     }
 }

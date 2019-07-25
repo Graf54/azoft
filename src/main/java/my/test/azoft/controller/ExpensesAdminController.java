@@ -55,7 +55,6 @@ public class ExpensesAdminController {
                        @RequestParam("timeS") String time,
                        @RequestParam("userId") int userId) {
         expensesService.saveFormForm(expenses, DateUtil.getDate(date, time));
-        
         return "redirect:/expenses/admin/user?id=" + userId;
     }
 
