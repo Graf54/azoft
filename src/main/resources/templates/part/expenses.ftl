@@ -1,4 +1,4 @@
-<#assign path="/tracker">
+<#assign path="/expenses">
 <#import "expensesForm.ftl" as form>
 <div class="container">
     <div>
