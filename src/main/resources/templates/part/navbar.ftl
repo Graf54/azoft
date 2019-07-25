@@ -12,7 +12,7 @@
         <ul class="navbar-nav mr-auto">
             <#if user??>
                 <li class="nav-item">
-                    <a class="nav-link" href="/tracker">Expenses</a>
+                    <a class="nav-link" href="/expenses">Expenses</a>
                 </li>
             </#if>
             <#if isAdmin>

@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-@RequestMapping("/tracker")
+@RequestMapping("/expenses")
 public class ExpensesController {
     @Autowired
     private ExpensesService expensesService;
@@ -28,7 +28,7 @@ public class ExpensesController {
         Iterable<Expenses> all = expensesService.findAllByUserOrderByDate(user);
         model.addAttribute("expenses", all);
         setCalculate(model, user, new Date(0), new Date());
-        return "tracker";
+        return "expenses";
     }
 
     private void setCalculate(Model model, User user, Date startDate, Date endDate) {
@@ -51,7 +51,7 @@ public class ExpensesController {
         model.addAttribute("idEdit", id);
         model.addAttribute("expenses", all);
         setCalculate(model, user, new Date(0), new Date());
-        return "tracker";
+        return "expenses";
     }
 
     @PostMapping("/edit")
@@ -63,14 +63,14 @@ public class ExpensesController {
         expenses.setDate(date1);
         expenses.setUser(user);
         expensesService.save(expenses);
-        return "redirect:/tracker";
+        return "redirect:/expenses";
     }
 
     @GetMapping("/delete")
     public String delete(@RequestParam("id") int id,
                          @AuthenticationPrincipal User user) {
         expensesService.deleteById(id, user);
-        return "redirect:/tracker";
+        return "redirect:/expenses";
     }
 
     @GetMapping("/calc")
@@ -84,7 +84,7 @@ public class ExpensesController {
         Date startDate = getDate(start);
         Date endDate = getDate(end);
         setCalculate(model, user, startDate, endDate);
-        return "tracker";
+        return "expenses";
     }
 
 
@@ -99,7 +99,7 @@ public class ExpensesController {
         expenses.setDate(date1);
         expenses.setUser(user);
         expensesService.save(expenses);
-        return "redirect:/tracker";
+        return "redirect:/expenses";
     }
 
     private Date getDate(String date, String time) {
