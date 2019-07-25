@@ -25,7 +25,7 @@
                 <#if (idEdit?? && exp.id==idEdit)>
                     <form action="/expenses/admin/edit" name="expenses" method="post">
                         <input type="hidden" id="id" name="id" value="${(exp.id)!}">
-                        <input type="hidden" id="id" name="id" value="${(userId)!}">
+                        <input type="hidden" id="userId" name="userId" value="${(userId)!}">
                         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                         <td>
                             <div class="form-group">
