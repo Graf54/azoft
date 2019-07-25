@@ -22,8 +22,8 @@ public class ExpensesService {
         this.expensesRepo = expensesRepo;
     }
 
-    public Optional<BigDecimal> getAverage(int userId, Date start, Date end) {
-        return expensesRepo.getAverage(userId, start, end);
+    public BigDecimal getAverage(int userId, Date start, Date end) {
+        return expensesRepo.getAverage(userId, start, end).orElse(new BigDecimal(0.0));
     }
 
     public Optional<Date> getFirstDate(int userId) {
@@ -158,7 +158,7 @@ public class ExpensesService {
         return expensesRepo.exists(example);
     }
 
-    public Optional<BigDecimal> getSumm(int userId, Date start, Date end) {
-        return expensesRepo.getSumm(userId, start, end);
+    public BigDecimal getSumm(int userId, Date start, Date end) {
+        return expensesRepo.getSumm(userId, start, end).orElse(new BigDecimal(0.0));
     }
 }

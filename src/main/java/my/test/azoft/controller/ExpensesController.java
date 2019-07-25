@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -34,11 +33,10 @@ public class ExpensesController {
 
     private void setCalculate(Model model, User user, Date startDate, Date endDate) {
         Calculate calculate = new Calculate();
-        calculate.setStart(new Date());
-        calculate.setEnd(new Date());
-        BigDecimal defoult = new BigDecimal(0.0);
-        double total = expensesService.getSumm(user.getId(), startDate, endDate).orElse(defoult).doubleValue();
-        double average = expensesService.getAverage(user.getId(), startDate, endDate).orElse(defoult).doubleValue();
+        calculate.setStart(startDate);
+        calculate.setEnd(endDate);
+        double total = expensesService.getSumm(user.getId(), startDate, endDate).doubleValue();
+        double average = expensesService.getAverage(user.getId(), startDate, endDate).doubleValue();
         calculate.setTotal(total);
         calculate.setAverage(average);
         model.addAttribute("calc", calculate);
