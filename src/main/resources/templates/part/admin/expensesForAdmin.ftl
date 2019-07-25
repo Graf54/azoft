@@ -1,8 +1,8 @@
-<#assign path="/tracker">
-<#import "expensesForm.ftl" as form>
+<#assign path="/expenses">
+<#import "../expensesForm.ftl" as form>
 <div class="container">
     <div>
-        <h3>Расходы</h3>
+        <h3>Расходы ${userName}</h3>
     </div>
     <table class="table">
         <thead class="thead-dark">
@@ -18,13 +18,14 @@
         <tbody>
         <tr>
             <#assign dateNow = .now>
-            <@form.expensesForm "/tracker/add" 0, dateNow, "", 0.0, ""/>
+            <@form.expensesForm "/expenses/admin/add" 0, dateNow, "", 0.0, ""/>
         </tr>
         <#list expenses as exp>
             <tr>
                 <#if (idEdit?? && exp.id==idEdit)>
-                    <form action="/expenses/user/edit" name="expenses" method="post">
+                    <form action="/expenses/admin/edit" name="expenses" method="post">
                         <input type="hidden" id="id" name="id" value="${(exp.id)!}">
+                        <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                         <td>
                             <div class="form-group">
                                 <input type="date" class="form-control" id="dateS" name="dateS"
@@ -73,7 +74,6 @@
                                        value="${exp.comment!}">
                             </div>
                         </td>
-                        <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                         <td>
                             <button type="submit" class="btn btn-primary">Изменить</button>
                         </td>
@@ -85,9 +85,11 @@
                     <td>${exp.value}</td>
                     <td>${exp.comment}</td>
                     <td>
-                        <a href="/expenses/delete?id=${exp.id}" class="btn btn-danger float-right mr-2"
+                        <a href="/expenses/admin/delete?id=${exp.id}&userId=${userId}"
+                           class="btn btn-danger float-right mr-2"
                            role="button">Delete</a>
-                        <a href="/expenses/edit?id=${exp.id}" class="btn btn-secondary float-right mr-2"
+                        <a href="/expenses/admin/edit?id=${exp.id}&userId=${userId}"
+                           class="btn btn-secondary float-right mr-2"
                            role="button">Edit</a>
                     </td>
                 </#if>

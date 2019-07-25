@@ -2,5 +2,5 @@
 
 <#setting datetime_format="dd.MM.yy HH:mm:ss">
 <@layout.mainLayout>
-    <#include "part/expensesForAdmin.ftl">
+    <#include "part/admin/expensesForAdmin.ftl">
 </@layout.mainLayout>
