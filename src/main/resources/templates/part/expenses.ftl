@@ -62,7 +62,7 @@
                                        required
                                        placeholder="Введите стоимость"
                                        title="Введите стоимость"
-                                       value="${exp.value?string["0.00"]}">
+                                       value="${exp.value?string.computer}">
                             </div>
                         </td>
                         <td>
