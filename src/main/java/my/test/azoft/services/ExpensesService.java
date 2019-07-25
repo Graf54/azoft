@@ -116,6 +116,20 @@ public class ExpensesService {
         }
     }
 
+    public boolean saveFormForm(Expenses expFromForm, Date date) {
+        Optional<Expenses> expensesOptional = expensesRepo.findById(expFromForm.getId());
+        if (expensesOptional.isPresent()) {
+            Expenses expensesDB = expensesOptional.get();
+            expensesDB.setDate(date);
+            expensesDB.setComment(expFromForm.getComment());
+            expensesDB.setDescription(expFromForm.getDescription());
+            expensesDB.setValue(expFromForm.getValue());
+            expensesRepo.save(expensesDB);
+            return true;
+        }
+        return false;
+    }
+
     public void delete(Expenses expenses) {
         expensesRepo.delete(expenses);
     }

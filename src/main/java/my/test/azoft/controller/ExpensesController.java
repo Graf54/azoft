@@ -4,6 +4,7 @@ import my.test.azoft.model.Calculate;
 import my.test.azoft.model.Expenses;
 import my.test.azoft.model.User;
 import my.test.azoft.services.ExpensesService;
+import my.test.azoft.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -11,8 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -23,8 +22,8 @@ public class ExpensesController {
     private ExpensesService expensesService;
 
     @GetMapping
-    public String tracker(Model model,
-                          @AuthenticationPrincipal User user) {
+    public String expenses(Model model,
+                           @AuthenticationPrincipal User user) {
         Iterable<Expenses> all = expensesService.findAllByUserOrderByDate(user);
         model.addAttribute("expenses", all);
         Date first = expensesService.getFirstDate(user.getId()).orElse(new Date());
@@ -59,12 +58,8 @@ public class ExpensesController {
     @PostMapping("/edit")
     public String edit(@ModelAttribute("expenses") Expenses expenses,
                        @RequestParam("dateS") String date,
-                       @RequestParam("timeS") String time,
-                       @AuthenticationPrincipal User user) {
-        Date date1 = getDate(date, time);
-        expenses.setDate(date1);
-        expenses.setUser(user);
-        expensesService.save(expenses);
+                       @RequestParam("timeS") String time) {
+        expensesService.saveFormForm(expenses, DateUtil.getDate(date, time));
         return "redirect:/expenses";
     }
 
@@ -82,8 +77,8 @@ public class ExpensesController {
                             @AuthenticationPrincipal User user) {
         Iterable<Expenses> all = expensesService.findAllByUserOrderByDate(user);
         model.addAttribute("expenses", all);
-        Date startDate = getDate(start);
-        Date endDate = getDate(end);
+        Date startDate = DateUtil.getDate(start);
+        Date endDate = DateUtil.getDate(end);
         setCalculate(model, user, startDate, endDate);
         return "expenses";
     }
@@ -95,31 +90,12 @@ public class ExpensesController {
             @ModelAttribute("expenses") Expenses expenses,
             @RequestParam("dateS") String date,
             @RequestParam("timeS") String time) {
-        Date date1 = getDate(date, time);
+        Date date1 = DateUtil.getDate(date, time);
         expenses.setDate(date1);
         expenses.setUser(user);
         expensesService.save(expenses);
         return "redirect:/expenses";
     }
 
-    private Date getDate(String date, String time) {
-        Date date1;
-        try {
-            date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(date + " " + time);
-        } catch (ParseException e) {
-            date1 = new Date();
-        }
-        return date1;
-    }
 
-
-    private Date getDate(String datetimeLocal) {
-        Date date1;
-        try {
-            date1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").parse(datetimeLocal);
-        } catch (ParseException e) {
-            date1 = new Date();
-        }
-        return date1;
-    }
 }

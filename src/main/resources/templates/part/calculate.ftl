@@ -11,7 +11,7 @@
     </thead>
     <tbody>
     <tr>
-        <form action="/tracker/calc" name="calculate" method="get">
+        <form action="/expenses/calc" name="calculate" method="get">
             <td>
                 <div class="form-group">
                     <input type="datetime-local" required

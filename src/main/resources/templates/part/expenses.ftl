@@ -18,7 +18,8 @@
         <tbody>
         <tr>
             <#assign dateNow = .now>
-            <@form.expensesForm "/tracker/add" 0, dateNow, "", 0.0, ""/>
+            <#--            userId нужен для админки тут ставим 0-->
+            <@form.expensesForm "/expenses/add" 0, dateNow, "", 0.0, "", 0/>
         </tr>
         <#list expenses as exp>
             <tr>
@@ -61,7 +62,7 @@
                                        required
                                        placeholder="Введите стоимость"
                                        title="Введите стоимость"
-                                       value="${exp.value?string["0.##"]}">
+                                       value="${exp.value?string["0.00"]}">
                             </div>
                         </td>
                         <td>

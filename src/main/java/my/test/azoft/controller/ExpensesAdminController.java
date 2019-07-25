@@ -55,26 +55,16 @@ public class ExpensesAdminController {
                        @RequestParam("timeS") String time,
                        @RequestParam("userId") int userId) {
         expensesService.saveFormForm(expenses, DateUtil.getDate(date, time));
+        
         return "redirect:/expenses/admin/user?id=" + userId;
     }
 
     @GetMapping("/delete")
     public String delete(@RequestParam("id") int id,
+                         @RequestParam("userId") int userId,
                          @AuthenticationPrincipal User user) {
         expensesService.deleteById(id, user);
-        return "redirect:/expenses";
-    }
-
-    @GetMapping("/calc")
-    public String calculate(Model model,
-                            @RequestParam("dateS") String start,
-                            @RequestParam("dateE") String end,
-                            @AuthenticationPrincipal User user) {
-        Iterable<Expenses> all = expensesService.findAllByUserOrderByDate(user);
-        model.addAttribute("expenses", all);
-        Date startDate = DateUtil.getDate(start);
-        Date endDate = DateUtil.getDate(end);
-        return "expenses";
+        return "redirect:/expenses/admin/user?id=" + userId;
     }
 
 
@@ -89,19 +79,5 @@ public class ExpensesAdminController {
         expenses.setUser(user);
         expensesService.save(expenses);
         return "redirect:/expenses";
-    }
-
-    @GetMapping("/admin/")
-    public String expensesUser(@PathVariable int userId,
-                               Model model) {
-        Optional<User> userOptional = userService.findById(userId);
-        if (userOptional.isPresent()) {
-            Iterable<Expenses> all = expensesService.findAllByUserOrderByDate(userOptional.get());
-            model.addAttribute("expenses", all);
-            return "expensesForAdmin";
-        } else {
-            // TODO: 25.07.2019 add redirect
-            return "";
-        }
     }
 }

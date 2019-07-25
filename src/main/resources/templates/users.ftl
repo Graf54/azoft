@@ -26,7 +26,7 @@
                     <a href="/users/edit?id=${usr.id}"
                        class="btn btn-secondary float-right mr-2"
                        role="button">Edit</a>
-                    <a href="/expenses/user?id=${usr.id}"
+                    <a href="/expenses/admin/user?id=${usr.id}"
                        class="btn btn-secondary float-right mr-2"
                        role="button">Расходы</a>
                 </td>

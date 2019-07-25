@@ -1,4 +1,4 @@
-<#assign path="/expenses">
+<#assign path="/expenses/admin">
 <#import "../expensesForm.ftl" as form>
 <div class="container">
     <div>
@@ -18,13 +18,14 @@
         <tbody>
         <tr>
             <#assign dateNow = .now>
-            <@form.expensesForm "/expenses/admin/add" 0, dateNow, "", 0.0, ""/>
+            <@form.expensesForm path+"/add" 0, dateNow, "", 0.0, "", userId/>
         </tr>
         <#list expenses as exp>
             <tr>
                 <#if (idEdit?? && exp.id==idEdit)>
                     <form action="/expenses/admin/edit" name="expenses" method="post">
                         <input type="hidden" id="id" name="id" value="${(exp.id)!}">
+                        <input type="hidden" id="id" name="id" value="${(userId)!}">
                         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                         <td>
                             <div class="form-group">
@@ -85,10 +86,10 @@
                     <td>${exp.value}</td>
                     <td>${exp.comment}</td>
                     <td>
-                        <a href="/expenses/admin/delete?id=${exp.id}&userId=${userId}"
+                        <a href="${path}/delete?id=${exp.id}&userId=${userId}"
                            class="btn btn-danger float-right mr-2"
                            role="button">Delete</a>
-                        <a href="/expenses/admin/edit?id=${exp.id}&userId=${userId}"
+                        <a href="${path}/edit?id=${exp.id}&userId=${userId}"
                            class="btn btn-secondary float-right mr-2"
                            role="button">Edit</a>
                     </td>

@@ -1,6 +1,9 @@
-<#macro expensesForm path id date desc value comment>
+<#macro expensesForm path id date desc value comment userId>
     <form action="${path}" name="expenses" method="post">
         <input type="hidden" id="id" name="id" value="${id}">
+        <#if userId??>
+            <input type="hidden" id="userId" name="userId" value="${userId}">
+        </#if>
         <td>
             <div class="form-group">
                 <input type="date"
