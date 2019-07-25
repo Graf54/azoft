@@ -1,17 +1,31 @@
 <#import "part/common.ftl" as c>
 
 <@c.page>
-User editor
+    <h3>Изменить пользователя</h3>
+    <form action="/users/save" method="post">
+        <div class="form-group">
+            <label for="username">Имя</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Введите имя"
+                   value="${(usr.username)!}">
+        </div>
+        <div class="form-group">
+            <label for="name">Роли</label>
+            <#list roles as role>
+                <div>
+                    <label><input type="checkbox"
+                                  name="${role.name}" ${usr.roles?seq_contains(role)?string("checked", "")} />${role.name}
+                    </label>
+                </div>
+            </#list>
+        </div>
+        <div class="form-group">
+            <label for="password">Пароль</label>
+            <input type="password" class="form-control" id="name" name="name" placeholder="Введите новый пароль"
+                   value="">
+        </div>
+        <input type="hidden" id="id" name="id" value="${(usr.id)!}">
+        <input type="hidden" value="${_csrf.token}" name="_csrf"/>
+        <button type="submit" class="btn btn-primary">Применить</button>
+    </form>
 
-<form action="/user" method="post">
-    <input type="text" name="username" value="${user.username}" />
-    <#list roles as role>
-    <div>
-        <label><input type="checkbox" name="${role}" ${user.roles?seq_contains(role)?string("checked", "")} />${role}</label>
-    </div>
-    </#list>
-    <input type="hidden" value="${user.id}" name="userId" />
-    <input type="hidden" value="${_csrf.token}" name="_csrf" />
-    <button type="submit">Save</button>
-</form>
 </@c.page>

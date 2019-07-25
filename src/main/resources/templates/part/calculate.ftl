@@ -4,7 +4,8 @@
     <tr>
         <th scope="col">Начало</th>
         <th scope="col">Конец</th>
-        <th scope="col">Стоимость</th>
+        <th scope="col">Общие расходы</th>
+        <th scope="col">Средний расход в день</th>
         <th scope="col">Редактор</th>
     </tr>
     </thead>
@@ -14,9 +15,9 @@
             <td>
                 <div class="form-group">
                     <input type="datetime-local" required
+                           
                            class="form-control" id="dateS" name="dateS"
-<#--                           value="${calc.start?datetime?string("dd.MM.yy HH:mm:ss")!}">-->
-                           value="">
+                           value="${calc.start?datetime?string.xs_ms_nz}">
                 </div>
 
             </td>
@@ -24,8 +25,7 @@
                 <div class="form-group">
                     <input type="datetime-local" required
                            class="form-control" id="dateE" name="dateE"
-<#--                           value="${calc.end?datetime?string("dd.MM.yy HH:mm:ss")!}">-->
-                           value="">
+                           value="${calc.end?datetime?string.xs_ms_nz}">
                 </div>
 
             </td>
@@ -33,8 +33,12 @@
                 ${calc.total!}
             </td>
             <td>
+                ${calc.average!}
+            </td>
+            <td>
                 <button type="submit" class="btn btn-primary">Подсчитать</button>
             </td>
+            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
         </form>
     </tr>
     </tbody>

@@ -39,6 +39,7 @@
                              <input type="time" required
                                     class="form-control" id="timeS" name="timeS"
                                     placeholder="Введите время"
+                                    title="Введите время"
                                     value="${exp.date?time}">
                          </div>
                      </td>
@@ -49,6 +50,7 @@
                                     name="description"
                                     maxlength="255"
                                     placeholder="Введите описание"
+                                    title="Введите описание"
                                     value="${exp.description!}">
                          </div>
                      </td>
@@ -59,13 +61,15 @@
                                     name="value"
                                     required
                                     placeholder="Введите стоимость"
-                                    value="${exp.value!}">
+                                    title="Введите стоимость"
+                                    value="${exp.value?string["0.##"]}">
                          </div>
                      </td>
                      <td>
                          <div class="form-group">
                              <input type="text" class="form-control" id="comment" name="comment"
                                     placeholder="Введите комментарий"
+                                    title="Введите комментарий"
                                     maxlength="255"
                                     value="${exp.comment!}">
                          </div>

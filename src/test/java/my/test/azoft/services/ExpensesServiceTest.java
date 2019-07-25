@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 
 @RunWith(SpringRunner.class)
@@ -27,19 +28,42 @@ public class ExpensesServiceTest {
 
     @Test
     public void getAverage() {
+        User tempUser = createTempUser();
+        addStandardExpenses(tempUser, 12.2);  // создаем запись с текущем момента
+
+        BigDecimal avr = expensesService.getAverage(tempUser.getId(), new Date(0), new Date()).get();
+
+        Assert.assertEquals(12.2, avr.doubleValue(), 0.0);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, 1);
+        addStandardExpenses(tempUser, 12.2, calendar.getTime()); // создаем запись завтрашнего дня
+        avr = expensesService.getAverage(tempUser.getId(), new Date(0), new Date()).get();
+
+        Assert.assertEquals(12.2, avr.doubleValue(), 0.0);
+        Assert.assertNotEquals(12.4, avr.doubleValue(), 0.0);
+    }
+
+    private void addStandardExpenses(User tempUser, double v) {
+        addStandardExpenses(tempUser, v, new Date());
+    }
+
+    private void addStandardExpenses(User saveUser, double value, Date date) {
+        Expenses expenses = createExpenses(saveUser, value, date);
+        expensesService.save(expenses);
     }
 
     @Test
-    public void findById(){
-        User user = new User();
-        user.setUsername("");
-        user.setPassword("");
-        User save = userService.save(user);
+    public void findById() {
+        User save = createTempUser();
         Expenses expenses = createExpenses(save, 12.2);
         expensesService.save(expenses);
         Expenses one = expensesService.getOne(expenses.getId());
 
         Assert.assertEquals(12.2, one.getValue().doubleValue(), 0.0);
+    }
+
+    private Expenses createExpenses(User save, double v) {
+        return createExpenses(save, v, new Date());
     }
 
     @Test
@@ -64,25 +88,28 @@ public class ExpensesServiceTest {
 
     @Test
     public void getSumm() {
-        User user = new User();
-        user.setUsername("");
-        user.setPassword("");
-        User saveUser = userService.save(user);
-        Expenses expenses = createExpenses(saveUser, 12.2);
-        expensesService.save(expenses);
+        double testValue = 12.2;
+        User saveUser = createTempUser();
+        addStandardExpenses(saveUser, testValue);
         BigDecimal summ = expensesService.getSumm(saveUser.getId(), new Date(0), new Date()).get();
 
-        Assert.assertEquals(12.2, summ.doubleValue(), 0.0);
-
-        expensesService.save(createExpenses(saveUser, 12.2));
+        Assert.assertEquals(testValue, summ.doubleValue(), 0.0);
+        addStandardExpenses(saveUser, testValue);
         summ = expensesService.getSumm(saveUser.getId(), new Date(0), new Date()).get();
 
         Assert.assertEquals(24.4, summ.doubleValue(), 0.0);
     }
 
-    private Expenses createExpenses(User save, double value) {
+    private User createTempUser() {
+        User user = new User();
+        user.setUsername("user");
+        user.setPassword("pass");
+        return userService.save(user);
+    }
+
+    private Expenses createExpenses(User save, double value, Date date) {
         Expenses expenses = new Expenses();
-        expenses.setDate(new Date());
+        expenses.setDate(date);
         expenses.setDescription("");
         expenses.setValue(new BigDecimal(value));
         expenses.setUser(save);

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -94,5 +96,29 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
         return user.get();
+    }
+
+    public void updateUser(User userEditable, Map<String, String> form) {
+        Optional<User> maybeUser = userRepo.findById(userEditable.getId());
+        if (maybeUser.isPresent()) {
+            User userFromBd = maybeUser.get();
+            if (userEditable.getPassword() != null) {
+                userFromBd.setPassword(passwordEncoder.encode(userEditable.getPassword()));
+            }
+            userFromBd.setUsername(userEditable.getUsername());
+            userFromBd.getRoles().clear();
+
+            // из формы берем роли, сравниваем с наличием в бд и добавляем юзеру если есть
+            List<Role> roles = roleService.findAll();
+            for (String key : form.keySet()) {
+                roles.stream()
+                        .filter(role -> role.getName().equalsIgnoreCase(key))
+                        .findFirst().
+                        ifPresent(role -> userFromBd.getRoles().add(role));
+            }
+
+
+            userRepo.save(userFromBd);
+        }
     }
 }

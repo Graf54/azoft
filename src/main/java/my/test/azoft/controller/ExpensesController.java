@@ -18,7 +18,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/tracker")
-public class TrackerController {
+public class ExpensesController {
     @Autowired
     private ExpensesService expensesService;
 
@@ -35,8 +35,11 @@ public class TrackerController {
         Calculate calculate = new Calculate();
         calculate.setStart(new Date());
         calculate.setEnd(new Date());
-        double total = expensesService.getSumm(user.getId(), startDate, endDate).orElse(new BigDecimal(0.0)).doubleValue();
+        BigDecimal defoult = new BigDecimal(0.0);
+        double total = expensesService.getSumm(user.getId(), startDate, endDate).orElse(defoult).doubleValue();
+        double average = expensesService.getAverage(user.getId(), startDate, endDate).orElse(defoult).doubleValue();
         calculate.setTotal(total);
+        calculate.setAverage(average);
         model.addAttribute("calc", calculate);
     }
 

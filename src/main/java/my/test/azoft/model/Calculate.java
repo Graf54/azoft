@@ -9,4 +9,5 @@ public class Calculate {
     private Date start;
     private Date end;
     private double total;
+    private double average;
 }

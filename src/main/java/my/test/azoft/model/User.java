@@ -1,6 +1,8 @@
 package my.test.azoft.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,10 +10,11 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 @Data
 @Entity
+@ToString(exclude = "roles")
+@EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +27,7 @@ public class User implements UserDetails {
     private List<Role> roles;
 
     @Column(length = 50)
-    @NotBlank(message = "Login cannot be empty")
+    @NotBlank(message = "Username cannot be empty")
     private String username;
 
     @Column(length = 255)
@@ -68,18 +71,5 @@ public class User implements UserDetails {
 
     public boolean isManager() {
         return roles.stream().anyMatch(role -> role.getId() == 2);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

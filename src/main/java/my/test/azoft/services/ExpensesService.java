@@ -26,6 +26,14 @@ public class ExpensesService {
         return expensesRepo.getAverage(userId, start, end);
     }
 
+    public Optional<Date> getFirstDate(int userId) {
+        return expensesRepo.getFirstDate(userId);
+    }
+
+    public Optional<Date> getLastDate(int userId) {
+        return expensesRepo.getLastDate(userId);
+    }
+
     public Optional<Expenses> findByIdAndUser(int id, User user) {
         return expensesRepo.findByIdAndUser(id, user);
     }
