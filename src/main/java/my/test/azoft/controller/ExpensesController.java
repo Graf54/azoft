@@ -5,7 +5,6 @@ import my.test.azoft.model.Expenses;
 import my.test.azoft.model.User;
 import my.test.azoft.services.ExpensesService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +27,9 @@ public class ExpensesController {
                           @AuthenticationPrincipal User user) {
         Iterable<Expenses> all = expensesService.findAllByUserOrderByDate(user);
         model.addAttribute("expenses", all);
-        setCalculate(model, user, new Date(0), new Date());
+        Date first = expensesService.getFirstDate(user.getId()).orElse(new Date());
+        Date last = expensesService.getLastDate(user.getId()).orElse(new Date());
+        setCalculate(model, user, first, last);
         return "expenses";
     }
 
@@ -99,15 +100,6 @@ public class ExpensesController {
         expenses.setUser(user);
         expensesService.save(expenses);
         return "redirect:/expenses";
-    }
-
-    @PreAuthorize("hasAuthority('Admin')")
-    @GetMapping("{user}")
-    public String expensesUser(@PathVariable User user,
-                               Model model) {
-        Iterable<Expenses> all = expensesService.findAllByUserOrderByDate(user);
-        model.addAttribute("expenses", all);
-        return "expensesForAdmin";
     }
 
     private Date getDate(String date, String time) {
