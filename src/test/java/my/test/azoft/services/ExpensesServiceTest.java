@@ -2,6 +2,7 @@ package my.test.azoft.services;
 
 import my.test.azoft.model.Expenses;
 import my.test.azoft.model.User;
+import my.test.azoft.util.DateUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,14 +44,6 @@ public class ExpensesServiceTest {
         Assert.assertNotEquals(12.4, avr.doubleValue(), 0.0);
     }
 
-    private void addStandardExpenses(User tempUser, double v) {
-        addStandardExpenses(tempUser, v, new Date());
-    }
-
-    private void addStandardExpenses(User saveUser, double value, Date date) {
-        Expenses expenses = createExpenses(saveUser, value, date);
-        expensesService.save(expenses);
-    }
 
     @Test
     public void findById() {
@@ -62,9 +55,6 @@ public class ExpensesServiceTest {
         Assert.assertEquals(12.2, one.getValue().doubleValue(), 0.0);
     }
 
-    private Expenses createExpenses(User save, double v) {
-        return createExpenses(save, v, new Date());
-    }
 
     @Test
     public void findByIdAndUser() {
@@ -100,6 +90,35 @@ public class ExpensesServiceTest {
         Assert.assertEquals(24.4, summ.doubleValue(), 0.0);
     }
 
+    @Test
+    public void saveFormForm() {
+        Expenses expenses = addStandardExpenses(createTempUser(), 12.2);
+        Expenses expensesFromForm = new Expenses();
+        expensesFromForm.setId(expenses.getId());
+        expensesFromForm.setUser(null);
+        String comment = "new comment";
+        expensesFromForm.setComment(comment);
+        expensesFromForm.setValue(new BigDecimal(24.4));
+        String desc = "new desc";
+        expensesFromForm.setDescription(desc);
+        Date date = DateUtil.getDate("2019-04-01'T'15:00");
+        expensesFromForm.setDate(null);
+        expensesService.saveFormForm(expensesFromForm, date);
+
+        Expenses updatedExp = expensesService.getOne(expenses.getId());
+
+        Assert.assertEquals(updatedExp.getComment(), comment);
+        Assert.assertEquals(updatedExp.getDescription(), desc);
+        Assert.assertEquals(updatedExp.getDate(), date);
+        Assert.assertEquals(updatedExp.getValue(), expensesFromForm.getValue());
+        Assert.assertNotEquals(updatedExp.getUser(), expensesFromForm.getUser()); // юзера не обновляем 
+
+
+    }
+
+    //    util method
+
+
     private User createTempUser() {
         User user = new User();
         user.setUsername("user");
@@ -114,5 +133,18 @@ public class ExpensesServiceTest {
         expenses.setValue(new BigDecimal(value));
         expenses.setUser(save);
         return expenses;
+    }
+
+    private Expenses addStandardExpenses(User tempUser, double v) {
+        return addStandardExpenses(tempUser, v, new Date());
+    }
+
+    private Expenses addStandardExpenses(User saveUser, double value, Date date) {
+        Expenses expenses = createExpenses(saveUser, value, date);
+        return expensesService.save(expenses);
+    }
+
+    private Expenses createExpenses(User save, double v) {
+        return createExpenses(save, v, new Date());
     }
 }
