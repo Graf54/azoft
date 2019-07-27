@@ -64,7 +64,7 @@ public class ExpensesController {
     @GetMapping("/delete")
     public String delete(@RequestParam("id") int id,
                          @AuthenticationPrincipal User user) {
-        expensesService.deleteById(id, user);
+        expensesService.deleteByIdAndUser(id, user);
         return "redirect:/expenses";
     }
 

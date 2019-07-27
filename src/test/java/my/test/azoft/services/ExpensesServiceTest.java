@@ -32,13 +32,13 @@ public class ExpensesServiceTest {
         User tempUser = createTempUser();
         addStandardExpenses(tempUser, 12.2);  // создаем запись с текущем момента
 
-        BigDecimal avr = expensesService.getAverage(tempUser.getId(), new Date(0), new Date()).get();
+        BigDecimal avr = expensesService.getAverage(tempUser.getId(), new Date(0), new Date());
 
         Assert.assertEquals(12.2, avr.doubleValue(), 0.0);
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 1);
         addStandardExpenses(tempUser, 12.2, calendar.getTime()); // создаем запись завтрашнего дня
-        avr = expensesService.getAverage(tempUser.getId(), new Date(0), new Date()).get();
+        avr = expensesService.getAverage(tempUser.getId(), new Date(0), new Date());
 
         Assert.assertEquals(12.2, avr.doubleValue(), 0.0);
         Assert.assertNotEquals(12.4, avr.doubleValue(), 0.0);
@@ -81,11 +81,11 @@ public class ExpensesServiceTest {
         double testValue = 12.2;
         User saveUser = createTempUser();
         addStandardExpenses(saveUser, testValue);
-        BigDecimal summ = expensesService.getSumm(saveUser.getId(), new Date(0), new Date()).get();
+        BigDecimal summ = expensesService.getSumm(saveUser.getId(), new Date(0), new Date());
 
         Assert.assertEquals(testValue, summ.doubleValue(), 0.0);
         addStandardExpenses(saveUser, testValue);
-        summ = expensesService.getSumm(saveUser.getId(), new Date(0), new Date()).get();
+        summ = expensesService.getSumm(saveUser.getId(), new Date(0), new Date());
 
         Assert.assertEquals(24.4, summ.doubleValue(), 0.0);
     }

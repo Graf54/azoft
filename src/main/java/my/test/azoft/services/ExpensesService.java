@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +39,7 @@ public class ExpensesService {
         return expensesRepo.findByIdAndUser(id, user);
     }
 
-    public void deleteById(Integer integer) {
+    public void deleteByIdAndUser(Integer integer) {
         expensesRepo.deleteById(integer);
     }
 
@@ -110,7 +111,7 @@ public class ExpensesService {
         return expensesRepo.count();
     }
 
-    public void deleteById(int id, User user) {
+    public void deleteByIdAndUser(int id, User user) {
         if (expensesRepo.findByIdAndUser(id, user).isPresent()) {
             expensesRepo.deleteById(id);
         }

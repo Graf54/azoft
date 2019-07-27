@@ -60,10 +60,9 @@ public class ExpensesAdminController {
 
     @GetMapping("/delete")
     public String delete(@RequestParam("id") int id,
-                         @RequestParam("userId") int userId,
-                         @AuthenticationPrincipal User user) {
-        expensesService.deleteById(id, user);
-        return "redirect:/expenses/admin/user?id=" + userId;
+                         @RequestParam("userId") User userId) {
+        expensesService.deleteByIdAndUser(id, userId);
+        return "redirect:/expenses/admin/user?id=" + userId.getId();
     }
 
 
