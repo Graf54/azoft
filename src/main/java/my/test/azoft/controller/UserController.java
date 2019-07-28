@@ -52,7 +52,7 @@ public class UserController {
             @AuthenticationPrincipal User user,
             Model model) {
         if (user.getId() == id) {
-            model.addAttribute("message", "Вы не можете удалить сами себя, нет, нельзя и не уговаривайте!");
+            model.addAttribute("message", "Вы не можете удалить сами себя!");
             model.addAttribute("users", userService.findAll());
             return "users";
         }
