@@ -1,5 +1,6 @@
 package my.test.azoft.services;
 
+import my.test.azoft.model.Calculate;
 import my.test.azoft.model.Expenses;
 import my.test.azoft.model.User;
 import my.test.azoft.repos.ExpensesRepo;
@@ -9,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -43,8 +43,8 @@ public class ExpensesService {
         expensesRepo.deleteById(integer);
     }
 
-    public List<Expenses> findAllByUserOrderByDate(User user) {
-        return expensesRepo.findAllByUserOrderByDate(user);
+    public Page<Expenses> findAllByUser(User user, Pageable pageable) {
+        return expensesRepo.findAllByUser(user, pageable);
     }
 
     public List<Expenses> findAll() {
@@ -117,7 +117,7 @@ public class ExpensesService {
         }
     }
 
-    public boolean saveFormForm(Expenses expFromForm, Date date) {
+    public boolean updateFormForm(Expenses expFromForm, Date date) {
         Optional<Expenses> expensesOptional = expensesRepo.findById(expFromForm.getId());
         if (expensesOptional.isPresent()) {
             Expenses expensesDB = expensesOptional.get();
@@ -129,6 +129,29 @@ public class ExpensesService {
             return true;
         }
         return false;
+    }
+
+    public Calculate getCalculate(int userId, Date first, Date last) {
+        Calculate calculate = new Calculate();
+        if (first == null) {
+            first = getFirstDate(userId).orElse(new Date());
+        }
+        if (last == null) {
+            last = getLastDate(userId).orElse(new Date());
+        }
+        if (first.after(last)) { // меняем местами если пользователь поставил даты не верно
+            Date temp = first;
+            first = last;
+            last = temp;
+
+        }
+        calculate.setStart(first);
+        calculate.setEnd(last);
+        double total = getSumm(userId, first, last).doubleValue();
+        double average = getAverage(userId, first, last).doubleValue();
+        calculate.setTotal(total);
+        calculate.setAverage(average);
+        return calculate;
     }
 
     public void delete(Expenses expenses) {

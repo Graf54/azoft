@@ -103,7 +103,7 @@ public class ExpensesServiceTest {
         expensesFromForm.setDescription(desc);
         Date date = DateUtil.getDate("2019-04-01'T'15:00");
         expensesFromForm.setDate(null);
-        expensesService.saveFormForm(expensesFromForm, date);
+        expensesService.updateFormForm(expensesFromForm, date);
 
         Expenses updatedExp = expensesService.getOne(expenses.getId());
 

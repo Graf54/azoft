@@ -14,7 +14,7 @@ public class Expenses {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn/*(nullable = false)*/
+    @JoinColumn(nullable = false)
     private User user;
     @Column(nullable = false)
     private Date date;

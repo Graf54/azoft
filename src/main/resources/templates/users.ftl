@@ -19,7 +19,6 @@
                 <td>${usr.username}</td>
                 <td><#list usr.roles as role>${role.name}<#sep>, </#list></td>
                 <td>
-                    <form action="employee.action" method="post" target="myFrame" id="myForm"></form>
                     <a href="/users/delete?id=${usr.id}"
                        class="btn btn-danger float-right mr-2"
                        role="button">Delete</a>

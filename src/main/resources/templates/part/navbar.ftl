@@ -1,5 +1,5 @@
 <#include "security.ftl">
-<#import "login.ftl" as l>
+<#import "macro/login.ftl" as l>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/">Tracker</a>
@@ -12,12 +12,12 @@
         <ul class="navbar-nav mr-auto">
             <#if user??>
                 <li class="nav-item">
-                    <a class="nav-link" href="/expenses">Expenses</a>
+                    <a class="nav-link" href="/expenses">Мои расходы</a>
                 </li>
             </#if>
             <#if isAdmin>
                 <li class="nav-item">
-                    <a class="nav-link" href="/users">User list</a>
+                    <a class="nav-link" href="/users">Список пользователей</a>
                 </li>
             </#if>
         </ul>
