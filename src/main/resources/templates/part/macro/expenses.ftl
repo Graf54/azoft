@@ -20,11 +20,42 @@
             </tr>
             </thead>
             <tbody>
+            <#--            FIND BY DATE -->
+            <tr>
+                <form action="${path}/find" name="filter" method="get">
+                    <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                    <#if userId??>
+                        <input type="hidden" id="userId" name="userId" value="${userId}">
+                    </#if>
+                    <td>
+                        <div class="form-group">
+                            <input type="date"
+                                   class="form-control" id="filterDay" name="filterDay"
+                                   placeholder="Введите день"
+                                   title="Введите день"
+                                   required
+                                    <#assign dayValue = "">
+                                    <#--<#if filterDay??>
+                                        <#assign dayValue ="${filterDay?date?string("yyyy-MM-dd")}" >
+                                    </#if>-->
+                                   value="${dayValue}">
+                        </div>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <button type="submit" class="btn btn-primary">Найти</button>
+                    </td>
+                </form>
+            </tr>
             <tr>
                 <#assign dateAdd = .now>
                 <#assign pathAdd = "${path}/add">
                 <@form.expensesAdd pathAdd, 0, dateAdd, "", 0.0, "" "Добавить"/>
             </tr>
+
             <#list page.content as exp>
                 <tr>
                     <#if (idEdit?? && exp.id==idEdit)>

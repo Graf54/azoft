@@ -47,7 +47,7 @@ public class ExpensesService {
     public Page<Expenses> findAllByUserAndFilter(User user, Pageable pageable, Optional<String> dateFilter) {
         if (dateFilter.isPresent()) {
             Date date = DateUtil.getDateByDay(dateFilter.get());
-            return expensesRepo.findAllByUserAndDate(user.getId(), pageable, date);
+            return expensesRepo.findAllByUserAndDate(user.getId(), date, pageable);
         }
         return expensesRepo.findAllByUser(user, pageable);
     }

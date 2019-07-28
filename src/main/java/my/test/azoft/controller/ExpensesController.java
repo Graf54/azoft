@@ -30,7 +30,9 @@ public class ExpensesController {
     @GetMapping
     public String expenses(Model model,
                            @RequestParam(required = false) String idEdit,
-                           @RequestParam(required = false) String filter,
+                           @RequestParam(value = "calcStart", required = false) String start,
+                           @RequestParam(value = "calcEnd", required = false) String end,
+                           @RequestParam(value = "filterDay", required = false) String filter,
                            @AuthenticationPrincipal User user,
                            @PageableDefault(sort = {"date", "id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         if (idEdit != null) {
@@ -41,7 +43,9 @@ public class ExpensesController {
             }
         }
         setPage(model, user, pageable, filter);
-        setCalculate(model, user, null, null);
+        Date startDate = start == null ? null : DateUtil.getDate(start);
+        Date endDate = end == null ? null : DateUtil.getDate(end);
+        setCalculate(model, user, startDate, endDate);
         return "expenses";
     }
 
@@ -85,16 +89,21 @@ public class ExpensesController {
 
     @GetMapping("/calc")
     public String calculate(Model model,
-                            @RequestParam("dateS") String start,
-                            @RequestParam("dateE") String end,
+                            @RequestParam("calcStart") String start,
+                            @RequestParam("calcEnd") String end,
                             RedirectAttributes redirectAttributes,
-                            @RequestHeader(required = false) String referer,
-                            @PageableDefault(sort = {"date"}, direction = Sort.Direction.DESC) Pageable pageable,
-                            @AuthenticationPrincipal User user) {
-        setPage(model, user, pageable, null);
-        Date startDate = DateUtil.getDate(start);
-        Date endDate = DateUtil.getDate(end);
-        setCalculate(model, user, startDate, endDate);
+                            @RequestHeader(required = false) String referer) {
+        redirectAttributes.addAttribute("calcStart", start);
+        redirectAttributes.addAttribute("calcEnd", end);
+        return redirect(redirectAttributes, referer);
+    }
+
+    @GetMapping("/find")
+    public String find(Model model,
+                       @RequestParam("filterDay") String start,
+                       RedirectAttributes redirectAttributes,
+                       @RequestHeader(required = false) String referer) {
+        redirectAttributes.addAttribute("filterDay", start);
         return redirect(redirectAttributes, referer);
     }
 

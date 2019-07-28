@@ -16,7 +16,7 @@
                 <div class="form-group">
                     <input type="datetime-local" required
                            
-                           class="form-control" id="dateS" name="dateS"
+                           class="form-control" id="calcStart" name="calcStart"
                            value="${calc.start?datetime?string.xs_ms_nz}">
                 </div>
 
@@ -24,7 +24,7 @@
             <td>
                 <div class="form-group">
                     <input type="datetime-local" required
-                           class="form-control" id="dateE" name="dateE"
+                           class="form-control" id="calcEnd" name="calcEnd"
                            value="${calc.end?datetime?string.xs_ms_nz}">
                 </div>
 

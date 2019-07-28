@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//@RestController
-//@RequestMapping("/api/expenses")
-public class ExpensesController {
+@RestController
+@RequestMapping("/api/user")
+public class UserRestController {
     private int count = 4;
     private List<Map<String, String>> expenes = new ArrayList<Map<String, String>>() {      //todo repalace
         {

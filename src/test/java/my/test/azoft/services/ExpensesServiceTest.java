@@ -8,6 +8,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -15,6 +18,7 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -116,6 +120,19 @@ public class ExpensesServiceTest {
 
     }
 
+
+    @Test
+    public void findAllByUserAndFilter() {
+        User tempUser = createTempUser();
+        String day = "2019-09-09";
+        Pageable firts = PageRequest.of(1, 10);
+        Optional optional = Optional.ofNullable(day);
+        addStandardExpenses(tempUser, 20, DateUtil.getDateByDay(day));
+        Page page = expensesService.findAllByUserAndFilter(tempUser, firts, optional);
+        Assert.assertEquals(1, page.getTotalPages());
+        Assert.assertEquals(1, page.getTotalElements());
+    }
+
     //    util method
 
 
@@ -147,4 +164,6 @@ public class ExpensesServiceTest {
     private Expenses createExpenses(User save, double v) {
         return createExpenses(save, v, new Date());
     }
+
+
 }

@@ -22,10 +22,10 @@ public interface ExpensesRepo extends JpaRepository<Expenses, Integer> {
 
     Page<Expenses> findAllByUser(User user, Pageable pageable);
 
-    @Query(value = "SELECT * FROM EXPENSES WHERE USER_ID=?1 and cast(DATE as DATE) = CAST(?3 as DATE)",
-            countQuery = "SELECT COUNT(*) FROM EXPENSES WHERE USER_ID=?1 and cast(DATE as DATE) = CAST(?3 as DATE)"
+    @Query(value = "SELECT * FROM EXPENSES WHERE USER_ID=?1 and cast(DATE as DATE) = CAST(?2 as DATE)",
+            countQuery = "SELECT COUNT(*) FROM EXPENSES WHERE USER_ID=?1 and cast(DATE as DATE) = CAST(?2 as DATE)"
             , nativeQuery = true)
-    Page<Expenses> findAllByUserAndDate(int userId, Pageable pageable, Date date);
+    Page<Expenses> findAllByUserAndDate(int userId, Date date, Pageable pageable);
 
     Optional<Expenses> findByIdAndUser(int id, User user);
 
