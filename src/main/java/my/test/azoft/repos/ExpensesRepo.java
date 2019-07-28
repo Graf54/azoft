@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -22,6 +21,11 @@ public interface ExpensesRepo extends JpaRepository<Expenses, Integer> {
     Optional<BigDecimal> getAverage(int userId, Date start, Date end);
 
     Page<Expenses> findAllByUser(User user, Pageable pageable);
+
+    @Query(value = "SELECT * FROM EXPENSES WHERE USER_ID=?1 and cast(DATE as DATE) = CAST(?3 as DATE)",
+            countQuery = "SELECT COUNT(*) FROM EXPENSES WHERE USER_ID=?1 and cast(DATE as DATE) = CAST(?3 as DATE)"
+            , nativeQuery = true)
+    Page<Expenses> findAllByUserAndDate(int userId, Pageable pageable, Date date);
 
     Optional<Expenses> findByIdAndUser(int id, User user);
 

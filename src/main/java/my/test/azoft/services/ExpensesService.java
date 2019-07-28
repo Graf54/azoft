@@ -4,6 +4,7 @@ import my.test.azoft.model.Calculate;
 import my.test.azoft.model.Expenses;
 import my.test.azoft.model.User;
 import my.test.azoft.repos.ExpensesRepo;
+import my.test.azoft.util.DateUtil;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +44,11 @@ public class ExpensesService {
         expensesRepo.deleteById(integer);
     }
 
-    public Page<Expenses> findAllByUser(User user, Pageable pageable) {
+    public Page<Expenses> findAllByUserAndFilter(User user, Pageable pageable, Optional<String> dateFilter) {
+        if (dateFilter.isPresent()) {
+            Date date = DateUtil.getDateByDay(dateFilter.get());
+            return expensesRepo.findAllByUserAndDate(user.getId(), pageable, date);
+        }
         return expensesRepo.findAllByUser(user, pageable);
     }
 

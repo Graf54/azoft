@@ -13,6 +13,14 @@ public class DateUtil {
         }
     }
 
+    public static Date getDateByDay(String date) {
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd").parse(date);
+        } catch (ParseException e) {
+            return new Date();
+        }
+    }
+
     public static Date getDate(String datetimeLocal) {
         try {
             return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").parse(datetimeLocal);

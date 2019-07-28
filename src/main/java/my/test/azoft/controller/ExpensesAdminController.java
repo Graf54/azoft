@@ -15,12 +15,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Date;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/expenses/admin")
+@RequestMapping("/expenses/admin/user")
 @PreAuthorize("hasAuthority('Admin')")
 public class ExpensesAdminController {
     @Autowired
@@ -28,9 +31,9 @@ public class ExpensesAdminController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/user")
+    @GetMapping()
     public String expenses(Model model,
-                           @PageableDefault(sort = {"date"}, direction = Sort.Direction.DESC) Pageable pageable,
+                           @PageableDefault(sort = {"date", "id"}, direction = Sort.Direction.DESC) Pageable pageable,
                            @RequestParam int id) {
         fillMain(model, pageable, id);
         return "expensesForAdmin";
@@ -39,7 +42,7 @@ public class ExpensesAdminController {
     private void fillMain(Model model, Pageable pageable, int targetUserId) {
         Optional<User> optionalUser = userService.findById(targetUserId);
         if (optionalUser.isPresent()) {
-            Page<Expenses> page = expensesService.findAllByUser(optionalUser.get(), pageable);
+            Page<Expenses> page = expensesService.findAllByUserAndFilter(optionalUser.get(), pageable, Optional.empty());
             model.addAttribute("page", page);
             model.addAttribute("userId", targetUserId);
             model.addAttribute("userName", optionalUser.get().getUsername());
@@ -91,4 +94,22 @@ public class ExpensesAdminController {
         }
         return "redirect:/expenses/admin/user?id=" + userId;
     }
+
+    private String redirect(RedirectAttributes redirectAttributes, String referer) {
+        if (referer == null || referer.isEmpty()) {
+            //todo check
+            return "redirect:/expensesFor";
+        }
+        UriComponents components = UriComponentsBuilder.fromHttpUrl(referer).build();
+
+        components.getQueryParams()
+                .forEach((key, value) -> {
+                    if (!(key.equals("idEdit") && redirectAttributes.containsAttribute("idEdit"))) { // если уже содержит, то добавлять не нужно
+                        redirectAttributes.addAttribute(key, value);
+                    }
+                });
+
+        return "redirect:" + components.getPath();
+    }
+
 }

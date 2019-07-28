@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
-@PreAuthorize("hasAuthority('Admin')")
+@PreAuthorize("hasAuthority('Admin')||hasAuthority('Manager')")
 public class UserController {
     @Autowired
     private UserService userService;

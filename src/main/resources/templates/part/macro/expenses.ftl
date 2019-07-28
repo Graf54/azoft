@@ -1,7 +1,7 @@
 <#import "../macro/expensesForm.ftl" as form>
 <#import "../pager.ftl" as p>
 
-<#macro expensesMacro path messH3>
+<#macro expensesMacro path messH3 parametrs="">
     <div class="container">
         <div>
             <#if messH3??>
@@ -37,10 +37,16 @@
                         <td>${exp.value}</td>
                         <td>${exp.comment}</td>
                         <td>
-                            <a href="${path}/delete?id=${exp.id}"
+                            <#assign deleteLink = "${path}/delete?id=${exp.id}">
+                            <#assign editLink = "${path}/edit?id=${exp.id}">
+                            <#if userId??>
+                                <#assign deleteLink = "${path}/delete?id=${exp.id}&userId=${userId}">
+                                <#assign editLink = "${path}/edit?id=${exp.id}&userId=${userId}">
+                            </#if>
+                            <a href="${deleteLink}"
                                class="btn btn-danger float-right mr-2"
                                role="button">Delete</a>
-                            <a href="${path}/edit?id=${exp.id}"
+                            <a href="${editLink}"
                                class="btn btn-secondary float-right mr-2"
                                role="button">Edit</a>
                         </td>
@@ -50,7 +56,7 @@
             </tbody>
         </table>
         <#assign url = "${path}">
-        <@p.pager page url />
+        <@p.pager page url parametrs/>
     </div>
 
 </#macro>

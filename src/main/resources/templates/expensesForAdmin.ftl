@@ -8,5 +8,5 @@
     <#if userName??>
         <#assign messH3 = "Расходы пользователя ${userName}">
     </#if>
-    <@exp.expensesMacro "/expenses/admin", messH3/>
+    <@exp.expensesMacro "/expenses/admin/user", messH3, "&id=${userId}"/>
 </@layout.mainLayout>
