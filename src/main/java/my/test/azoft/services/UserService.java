@@ -3,6 +3,8 @@ package my.test.azoft.services;
 import my.test.azoft.model.Role;
 import my.test.azoft.model.User;
 import my.test.azoft.repos.UserRepo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -41,6 +43,10 @@ public class UserService implements UserDetailsService {
 
     }
 
+    public Page<User> findByUsernameContaining(String username, Pageable pageable) {
+        return userRepo.findByUsernameContaining(username, pageable);
+    }
+
     public Optional<User> findByLogin(String login) {
         return userRepo.findByUsername(login);
     }
@@ -61,8 +67,8 @@ public class UserService implements UserDetailsService {
         return userRepo.existsById(integer);
     }
 
-    public Iterable<User> findAll() {
-        return userRepo.findAll();
+    public Page<User> findAll(Pageable pageable) {
+        return userRepo.findAll(pageable);
     }
 
     public Iterable<User> findAllById(Iterable<Integer> iterable) {

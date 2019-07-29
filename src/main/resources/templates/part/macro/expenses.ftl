@@ -1,5 +1,5 @@
 <#import "../macro/expensesForm.ftl" as form>
-<#import "../pager.ftl" as p>
+<#import "pager.ftl" as p>
 
 <#macro expensesMacro path messH3 parametrs="">
     <div class="container">
@@ -23,7 +23,6 @@
             <#--            FIND BY DATE -->
             <tr>
                 <form action="${path}/find" name="filter" method="get">
-                    <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                     <#if userId??>
                         <input type="hidden" id="userId" name="userId" value="${userId}">
                     </#if>
@@ -34,11 +33,12 @@
                                    placeholder="Введите день"
                                    title="Введите день"
                                    required
-                                    <#assign dayValue = "">
-                                    <#--<#if filterDay??>
-                                        <#assign dayValue ="${filterDay?date?string("yyyy-MM-dd")}" >
-                                    </#if>-->
-                                   value="${dayValue}">
+                                    <#if filterDay??>
+                                        value="${filterDay}"
+                                    <#else >
+                                        value=""
+                                    </#if>
+                            >
                         </div>
                     </td>
                     <td></td>

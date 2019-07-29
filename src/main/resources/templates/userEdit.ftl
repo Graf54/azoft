@@ -1,4 +1,4 @@
-<#import "part/common.ftl" as c>
+<#import "part/macro/common.ftl" as c>
 
 <@c.page>
     <h3>Изменить пользователя</h3>

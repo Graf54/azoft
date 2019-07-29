@@ -26,6 +26,7 @@ import java.util.Optional;
 public class ExpensesController {
     @Autowired
     private ExpensesService expensesService;
+    private static final String URL_REDIRECT = "redirect:/expenses";
 
     @GetMapping
     public String expenses(Model model,
@@ -41,6 +42,9 @@ public class ExpensesController {
                 model.addAttribute("idEdit", idInt);
             } catch (NumberFormatException ignore) {
             }
+        }
+        if (filter != null) {
+            model.addAttribute("filterDay", filter);
         }
         setPage(model, user, pageable, filter);
         Date startDate = start == null ? null : DateUtil.getDate(start);
@@ -64,7 +68,7 @@ public class ExpensesController {
                        RedirectAttributes redirectAttributes,
                        @RequestHeader(required = false) String referer) {
         redirectAttributes.addAttribute("idEdit", id);
-        return redirect(redirectAttributes, referer);
+        return ControllerUtils.redirect(redirectAttributes, referer, URL_REDIRECT);
     }
 
     @PostMapping("/edit")
@@ -75,7 +79,7 @@ public class ExpensesController {
                        @RequestHeader(required = false) String referer) {
         expensesService.updateFormForm(expenses, DateUtil.getDate(date, time));
         redirectAttributes.addAttribute("idEdit", 0); // очишаем поле редактирования
-        return redirect(redirectAttributes, referer);
+        return ControllerUtils.redirect(redirectAttributes, referer, URL_REDIRECT);
     }
 
     @GetMapping("/delete")
@@ -84,7 +88,7 @@ public class ExpensesController {
                          RedirectAttributes redirectAttributes,
                          @RequestHeader(required = false) String referer) {
         expensesService.deleteByIdAndUser(id, user);
-        return redirect(redirectAttributes, referer);
+        return ControllerUtils.redirect(redirectAttributes, referer, URL_REDIRECT);
     }
 
     @GetMapping("/calc")
@@ -95,16 +99,16 @@ public class ExpensesController {
                             @RequestHeader(required = false) String referer) {
         redirectAttributes.addAttribute("calcStart", start);
         redirectAttributes.addAttribute("calcEnd", end);
-        return redirect(redirectAttributes, referer);
+        return ControllerUtils.redirect(redirectAttributes, referer, URL_REDIRECT);
     }
 
     @GetMapping("/find")
     public String find(Model model,
-                       @RequestParam("filterDay") String start,
+                       @RequestParam("filterDay") String filter,
                        RedirectAttributes redirectAttributes,
                        @RequestHeader(required = false) String referer) {
-        redirectAttributes.addAttribute("filterDay", start);
-        return redirect(redirectAttributes, referer);
+        redirectAttributes.addAttribute("filterDay", filter);
+        return ControllerUtils.redirect(redirectAttributes, referer, URL_REDIRECT);
     }
 
 
@@ -120,24 +124,6 @@ public class ExpensesController {
         expenses.setDate(date1);
         expenses.setUser(user);
         expensesService.save(expenses);
-        return redirect(redirectAttributes, referer);
+        return ControllerUtils.redirect(redirectAttributes, referer, URL_REDIRECT);
     }
-
-
-    private String redirect(RedirectAttributes redirectAttributes, String referer) {
-        if (referer == null || referer.isEmpty()) {
-            return "redirect:/expenses";
-        }
-        UriComponents components = UriComponentsBuilder.fromHttpUrl(referer).build();
-
-        components.getQueryParams()
-                .forEach((key, value) -> {
-                    if (!(key.equals("idEdit") && redirectAttributes.containsAttribute("idEdit"))) { // если уже содержит, то добавлять не нужно
-                        redirectAttributes.addAttribute(key, value);
-                    }
-                });
-
-        return "redirect:" + components.getPath();
-    }
-
 }

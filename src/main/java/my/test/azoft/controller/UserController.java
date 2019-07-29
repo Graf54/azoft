@@ -4,6 +4,10 @@ import my.test.azoft.model.User;
 import my.test.azoft.services.RoleService;
 import my.test.azoft.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -23,8 +27,19 @@ public class UserController {
     private RoleService roleService;
 
     @GetMapping
-    public String listUsers(Model model) {
-        model.addAttribute("users", userService.findAll());
+    public String listUsers(Model model,
+                            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
+        addPage(model, pageable);
+        return "users";
+    }
+
+    @GetMapping("/find")
+    public String find(
+            @RequestParam("filter") String filter,
+            Model model,
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<User> page = userService.findByUsernameContaining(filter, pageable);
+        model.addAttribute("page", page);
         return "users";
     }
 
@@ -50,20 +65,25 @@ public class UserController {
     public String delete(
             @RequestParam("id") int id,
             @AuthenticationPrincipal User user,
-            Model model) {
+            Model model,
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
         if (user.getId() == id) {
             model.addAttribute("message", "Вы не можете удалить сами себя!");
-            model.addAttribute("users", userService.findAll());
+            addPage(model, pageable);
             return "users";
         }
         Optional<User> userOptional = userService.findById(id);
         if (!userOptional.isPresent()) {
             model.addAttribute("message", "Пользователь не найден");
-            model.addAttribute("users", userService.findAll());
+            addPage(model, pageable);
             return "users";
         }
 
         userService.deleteById(id);
         return "redirect:/users";
+    }
+
+    private Model addPage(Model model, Pageable pageable) {
+        return model.addAttribute("page", userService.findAll(pageable));
     }
 }
