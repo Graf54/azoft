@@ -1,5 +1,6 @@
 package my.test.azoft.controller;
 
+import my.test.azoft.model.Role;
 import my.test.azoft.model.User;
 import my.test.azoft.services.RoleService;
 import my.test.azoft.services.UserService;
@@ -15,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -33,7 +35,7 @@ public class UserController {
                             @RequestParam(value = "filter", required = false) String filter,
                             @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable,
                             @AuthenticationPrincipal User user) {
-        Page<User> page = userService.findByUsernameContaining(Optional.ofNullable(filter), pageable);
+        Page<User> page = userService.findByUsernameContaining(Optional.ofNullable(filter), pageable, user);
         addPage(model, page);
         return "users";
     }
@@ -48,26 +50,44 @@ public class UserController {
     }
 
     @GetMapping("/edit")
-    public String edit(@RequestParam("id") int id, Model model) {
+    public String edit(@RequestParam("id") int id,
+                       @AuthenticationPrincipal User user,
+                       Model model) {
+
         model.addAttribute("usr", userService.findById(id).get());
-        model.addAttribute("roles", roleService.findAll());
+        if (!user.isAdmin()) {
+            List<Role> roles = roleService.findAll();
+            roles.removeIf(x -> x.getId() == 1);
+            model.addAttribute("roles", roles);
+        } else {
+            model.addAttribute("roles", roleService.findAll());
+        }
         return "userEdit";
     }
 
     @PostMapping("/save")
     public String edit(
             Model model,
-            @ModelAttribute("Usr") User userForm,
             @AuthenticationPrincipal User user,
+            @ModelAttribute("Usr") User userForm,
             @RequestParam Map<String, String> form) {
         Optional<User> optional = userService.findByUsername(userForm.getUsername());
-        if (optional.isPresent() && optional.get().getId() != userForm.getId()) { // имя пользователя уже есть такое
-            model.addAttribute("message", "Имя пользователя уже занято");
-            model.addAttribute("usr", userService.findById(userForm.getId()).get());
-            model.addAttribute("roles", roleService.findAll());
-            return "userEdit";
+
+        if (optional.isPresent()) {
+            User userFromDb = optional.get();
+            if (userFromDb.isAdmin() && !user.isAdmin()) { // manager try edit admin
+                return "redirect:/users";
+            }
+            if (optional.get().getId() != userForm.getId()) { // имя пользователя уже есть такое
+                model.addAttribute("message", "Имя пользователя уже занято");
+                model.addAttribute("usr", userService.findById(userForm.getId()).get());
+                model.addAttribute("roles", roleService.findAll());
+                return "userEdit";
+            } else {
+                userService.updateUser(userForm, form);
+                return "redirect:/users";
+            }
         }
-        userService.updateUser(userForm, form);
         return "redirect:/users";
     }
 

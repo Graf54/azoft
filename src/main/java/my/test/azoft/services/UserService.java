@@ -24,6 +24,7 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
     private final ExpensesService expensesService;
+
     public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder, RoleService roleService, ExpensesService expensesService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
@@ -45,10 +46,15 @@ public class UserService implements UserDetailsService {
     }
 
     public Page<User> findByUsernameContaining(Optional<String> username, Pageable pageable, User editor) {
-        if (editor.isAdmin()){
-
+        if (!editor.isAdmin()) {
+            // admin id = 1
+            if (username.isPresent()) {
+                return userRepo.findAllExceptRoleIdAndUsernameLike(1, username.get(), pageable);
+            } else {
+                return userRepo.findAllExceptRoleId(1, pageable);
+            }
         }
-        if (username.isPresent()){
+        if (username.isPresent()) {
             return userRepo.findByUsernameContaining(username.get(), pageable);
         } else {
             return userRepo.findAll(pageable);
@@ -96,7 +102,6 @@ public class UserService implements UserDetailsService {
         }
         return user.get();
     }
-
 
 
     public void updateUser(User userEditable, Map<String, String> form) {

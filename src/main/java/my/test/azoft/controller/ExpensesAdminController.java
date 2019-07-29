@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +53,7 @@ public class ExpensesAdminController {
     @GetMapping("/edit")
     public String edit(@RequestParam int id,
                        @RequestParam int userId,
-                       @PageableDefault(sort = {"date"}, direction = Sort.Direction.DESC) Pageable pageable,
+                       @PageableDefault(sort = {"date", "id"}, direction = Sort.Direction.DESC) Pageable pageable,
                        Model model) {
         fillMain(model, pageable, userId);
         model.addAttribute("idEdit", id);
@@ -80,7 +79,6 @@ public class ExpensesAdminController {
 
     @PostMapping("/add")
     public String add(
-            @AuthenticationPrincipal User admin,
             @ModelAttribute("expenses") Expenses expenses,
             @RequestParam("dateS") String date,
             @RequestParam("timeS") String time,
@@ -97,7 +95,6 @@ public class ExpensesAdminController {
 
     private String redirect(RedirectAttributes redirectAttributes, String referer) {
         if (referer == null || referer.isEmpty()) {
-            //todo check
             return "redirect:/expensesFor";
         }
         UriComponents components = UriComponentsBuilder.fromHttpUrl(referer).build();

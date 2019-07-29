@@ -16,8 +16,13 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 
     Page<User> findByUsernameContaining(String username, Pageable pageable);
 
-    @Query(value = "SELECT * FROM USER usr WHERE usr.ID not in(SELECT USER_ID from USER_ROLES where ROLE_ID=?1);",
-            countQuery = "SELECT count(*) FROM USER usr WHERE usr.ID not in(SELECT USER_ID from USER_ROLES where ROLE_ID=?1);"
+    @Query(value = "SELECT * FROM USER usr WHERE usr.ID not in(SELECT USER_ID from USER_ROLES where ROLE_ID=?1)",
+            countQuery = "SELECT count(*) FROM USER usr WHERE usr.ID not in(SELECT USER_ID from USER_ROLES where ROLE_ID=?1)"
             , nativeQuery = true)
     Page<User> findAllExceptRoleId(int roleId, Pageable pageable);
+
+    @Query(value = "SELECT * FROM USER usr WHERE usr.USERNAME like ?2 and usr.ID not in(SELECT USER_ID from USER_ROLES where ROLE_ID=?1)",
+            countQuery = "SELECT count(*) FROM USER usr WHERE usr.USERNAME like ?2 and usr.ID not in(SELECT USER_ID from USER_ROLES where ROLE_ID=?1)"
+            , nativeQuery = true)
+    Page<User> findAllExceptRoleIdAndUsernameLike(int roleId, String username, Pageable pageable);
 }
