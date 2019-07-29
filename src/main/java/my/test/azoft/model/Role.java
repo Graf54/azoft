@@ -3,6 +3,8 @@ package my.test.azoft.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -18,6 +20,7 @@ public class Role implements GrantedAuthority {
     @Column(length = 50)
     private String name;
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<User> user;
 
     @Override

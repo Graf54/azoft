@@ -3,6 +3,8 @@ package my.test.azoft.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -24,6 +26,7 @@ public class User implements UserDetails {
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Role> roles;
 
     @Column(length = 50, unique = true)

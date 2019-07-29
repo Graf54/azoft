@@ -31,13 +31,9 @@ public class UserController {
     @GetMapping
     public String listUsers(Model model,
                             @RequestParam(value = "filter", required = false) String filter,
-                            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<User> page;
-        if (filter != null) {
-            page = userService.findByUsernameContaining(filter, pageable);
-        } else {
-            page = userService.findAll(pageable);
-        }
+                            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable,
+                            @AuthenticationPrincipal User user) {
+        Page<User> page = userService.findByUsernameContaining(Optional.ofNullable(filter), pageable);
         addPage(model, page);
         return "users";
     }
@@ -58,12 +54,19 @@ public class UserController {
         return "userEdit";
     }
 
-    // TODO: 25.07.2019 check user use
     @PostMapping("/save")
     public String edit(
+            Model model,
             @ModelAttribute("Usr") User userForm,
             @AuthenticationPrincipal User user,
             @RequestParam Map<String, String> form) {
+        Optional<User> optional = userService.findByUsername(userForm.getUsername());
+        if (optional.isPresent() && optional.get().getId() != userForm.getId()) { // имя пользователя уже есть такое
+            model.addAttribute("message", "Имя пользователя уже занято");
+            model.addAttribute("usr", userService.findById(userForm.getId()).get());
+            model.addAttribute("roles", roleService.findAll());
+            return "userEdit";
+        }
         userService.updateUser(userForm, form);
         return "redirect:/users";
     }

@@ -2,6 +2,13 @@
 
 <@c.page>
     <h3>Изменить пользователя</h3>
+
+    <#if message??>
+        <#if message??>
+            <h4 class="text-danger">${message}</h4>
+        </#if>
+    </#if>
+
     <form action="/users/save" method="post">
         <div class="form-group">
             <label for="username">Имя</label>

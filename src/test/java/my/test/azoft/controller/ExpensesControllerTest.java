@@ -31,8 +31,6 @@ public class ExpensesControllerTest {
         mockMvc.perform(get("/"))
                 .andDo(print())
                 .andExpect(authenticated());
-        //todo 
-//                .andExpect(xpath("//div[@id='navbarSupportedContent']/div").string("Admin"));
     }
 
     @Test

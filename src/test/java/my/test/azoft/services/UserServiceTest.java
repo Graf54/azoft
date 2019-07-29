@@ -34,7 +34,7 @@ public class UserServiceTest {
         String login = "username";
         User user = getUser(login, "pass");
         userService.createUser(user);
-        Optional<User> foundUser = userService.findByLogin(login);
+        Optional<User> foundUser = userService.findByUsername(login);
         Assert.assertEquals(foundUser.get().getUsername(), user.getUsername());
         Assert.assertTrue(foundUser.get().getRoles().stream().anyMatch(role -> role.getId() == 3));
 
@@ -42,7 +42,7 @@ public class UserServiceTest {
         user = getUser("user2", "pass");
         userService.createUser(user);
 
-        foundUser = userService.findByLogin(login);
+        foundUser = userService.findByUsername(login);
         Assert.assertEquals(foundUser.get().getUsername(), user.getUsername());
         Assert.assertTrue(foundUser.get().getRoles().stream().anyMatch(role -> role.getId() == 3));
         Assert.assertEquals(userService.count(), 2);

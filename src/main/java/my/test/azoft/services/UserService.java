@@ -23,15 +23,16 @@ public class UserService implements UserDetailsService {
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
-
-    public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder, RoleService roleService) {
+    private final ExpensesService expensesService;
+    public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder, RoleService roleService, ExpensesService expensesService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
+        this.expensesService = expensesService;
     }
 
     public boolean createUser(User user) {
-        if (findByLogin(user.getUsername()).isPresent()) {
+        if (findByUsername(user.getUsername()).isPresent()) {
             return false;
         }
 
@@ -43,11 +44,18 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public Page<User> findByUsernameContaining(String username, Pageable pageable) {
-        return userRepo.findByUsernameContaining(username, pageable);
+    public Page<User> findByUsernameContaining(Optional<String> username, Pageable pageable, User editor) {
+        if (editor.isAdmin()){
+
+        }
+        if (username.isPresent()){
+            return userRepo.findByUsernameContaining(username.get(), pageable);
+        } else {
+            return userRepo.findAll(pageable);
+        }
     }
 
-    public Optional<User> findByLogin(String login) {
+    public Optional<User> findByUsername(String login) {
         return userRepo.findByUsername(login);
     }
 
@@ -55,25 +63,16 @@ public class UserService implements UserDetailsService {
         return userRepo.save(s);
     }
 
-    public <S extends User> Iterable<S> saveAll(Iterable<S> iterable) {
-        return userRepo.saveAll(iterable);
-    }
 
     public Optional<User> findById(Integer integer) {
         return userRepo.findById(integer);
     }
 
-    public boolean existsById(Integer integer) {
-        return userRepo.existsById(integer);
-    }
 
     public Page<User> findAll(Pageable pageable) {
         return userRepo.findAll(pageable);
     }
 
-    public Iterable<User> findAllById(Iterable<Integer> iterable) {
-        return userRepo.findAllById(iterable);
-    }
 
     public long count() {
         return userRepo.count();
@@ -84,16 +83,10 @@ public class UserService implements UserDetailsService {
     }
 
     public void delete(User user) {
+
         userRepo.delete(user);
     }
 
-    public void deleteAll(Iterable<? extends User> iterable) {
-        userRepo.deleteAll(iterable);
-    }
-
-    public void deleteAll() {
-        userRepo.deleteAll();
-    }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -103,6 +96,8 @@ public class UserService implements UserDetailsService {
         }
         return user.get();
     }
+
+
 
     public void updateUser(User userEditable, Map<String, String> form) {
         Optional<User> maybeUser = userRepo.findById(userEditable.getId());

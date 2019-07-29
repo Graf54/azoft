@@ -63,7 +63,7 @@
                         <@form.expensesAdd pathEdit exp.id, exp.date, exp.description, exp.value, exp.comment, "Изменить"/>
                     <#else >
                         <td>${exp.date?datetime?string("dd.MM.yy")}</td>
-                        <td>${exp.date?datetime?string("HH:mm:ss")}</td>
+                        <td>${exp.date?datetime?string("HH:mm")}</td>
                         <td>${exp.description}</td>
                         <td>${exp.value}</td>
                         <td>${exp.comment}</td>
