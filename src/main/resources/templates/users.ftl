@@ -1,5 +1,5 @@
 <#import "part/common.ftl" as c>
-
+<#include "part/security.ftl">
 <@c.page>
     <h3>Список пользователей</h3>
     <#if message??>
@@ -14,6 +14,11 @@
         </tr>
         </thead>
         <tbody>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
         <#list users as usr>
             <tr>
                 <td>${usr.username}</td>
@@ -25,9 +30,11 @@
                     <a href="/users/edit?id=${usr.id}"
                        class="btn btn-secondary float-right mr-2"
                        role="button">Edit</a>
-                    <a href="/expenses/admin/user?id=${usr.id}"
-                       class="btn btn-secondary float-right mr-2"
-                       role="button">Расходы</a>
+                    <#if isAdmin>
+                        <a href="/expenses/admin/user?id=${usr.id}"
+                           class="btn btn-secondary float-right mr-2"
+                           role="button">Расходы</a>
+                    </#if>
                 </td>
             </tr>
         </#list>

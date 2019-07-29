@@ -20,7 +20,7 @@
         </div>
         <div class="form-group">
             <label for="password">Пароль</label>
-            <input type="password" class="form-control" id="name" name="name" placeholder="Введите новый пароль"
+            <input type="password" class="form-control" id="password" name="password" placeholder="Введите новый пароль"
                    value="">
         </div>
         <input type="hidden" id="id" name="id" value="${(usr.id)!}">

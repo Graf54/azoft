@@ -15,7 +15,7 @@
                     <a class="nav-link" href="/expenses">Мои расходы</a>
                 </li>
             </#if>
-            <#if isAdmin>
+            <#if isAdmin||isManager>
                 <li class="nav-item">
                     <a class="nav-link" href="/users">Список пользователей</a>
                 </li>
