@@ -21,7 +21,7 @@ public class ControllerUtils {
 
     public static String redirect(RedirectAttributes redirectAttributes, String referer, String urlEmpty) {
         if (referer == null || referer.isEmpty()) {
-            return urlEmpty;//"redirect:/expenses";
+            return urlEmpty;
         }
         UriComponents components = UriComponentsBuilder.fromHttpUrl(referer).build();
 

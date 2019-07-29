@@ -26,7 +26,7 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles;
 
-    @Column(length = 50)
+    @Column(length = 50, unique = true)
     @NotBlank(message = "Username cannot be empty")
     private String username;
 

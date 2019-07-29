@@ -6,6 +6,7 @@
         <div class="form-group">
             <label for="username">Имя</label>
             <input type="text" class="form-control" id="username" name="username" placeholder="Введите имя"
+                   maxlength="50"
                    value="${(usr.username)!}">
         </div>
         <div class="form-group">
@@ -20,7 +21,8 @@
         </div>
         <div class="form-group">
             <label for="password">Пароль</label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Введите новый пароль"
+            <input type="password" class="form-control" id="password" name="password" maxlength="255"
+                   placeholder="Введите новый пароль"
                    value="">
         </div>
         <input type="hidden" id="id" name="id" value="${(usr.id)!}">

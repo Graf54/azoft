@@ -13,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Map;
 import java.util.Optional;
@@ -25,27 +26,33 @@ public class UserController {
     private UserService userService;
     @Autowired
     private RoleService roleService;
+    private static final String URL_REDIRECT = "redirect:/users";
 
     @GetMapping
     public String listUsers(Model model,
+                            @RequestParam(value = "filter", required = false) String filter,
                             @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
-        addPage(model, pageable);
+        Page<User> page;
+        if (filter != null) {
+            page = userService.findByUsernameContaining(filter, pageable);
+        } else {
+            page = userService.findAll(pageable);
+        }
+        addPage(model, page);
         return "users";
     }
 
     @GetMapping("/find")
     public String find(
-            @RequestParam("filter") String filter,
-            Model model,
-            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<User> page = userService.findByUsernameContaining(filter, pageable);
-        model.addAttribute("page", page);
-        return "users";
+            RedirectAttributes redirectAttributes,
+            @RequestHeader(required = false) String referer,
+            @RequestParam("filter") String filter) {
+        redirectAttributes.addAttribute("filter", filter);
+        return ControllerUtils.redirect(redirectAttributes, referer, URL_REDIRECT);
     }
 
     @GetMapping("/edit")
     public String edit(@RequestParam("id") int id, Model model) {
-        //todo check present
         model.addAttribute("usr", userService.findById(id).get());
         model.addAttribute("roles", roleService.findAll());
         return "userEdit";
@@ -69,13 +76,13 @@ public class UserController {
             @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
         if (user.getId() == id) {
             model.addAttribute("message", "Вы не можете удалить сами себя!");
-            addPage(model, pageable);
+            addPage(model, userService.findAll(pageable));
             return "users";
         }
         Optional<User> userOptional = userService.findById(id);
         if (!userOptional.isPresent()) {
             model.addAttribute("message", "Пользователь не найден");
-            addPage(model, pageable);
+            addPage(model, userService.findAll(pageable));
             return "users";
         }
 
@@ -83,7 +90,7 @@ public class UserController {
         return "redirect:/users";
     }
 
-    private Model addPage(Model model, Pageable pageable) {
-        return model.addAttribute("page", userService.findAll(pageable));
+    private Model addPage(Model model, Page page) {
+        return model.addAttribute("page", page);
     }
 }
