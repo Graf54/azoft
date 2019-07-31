@@ -30,8 +30,9 @@ public class ExpensesRestController {
     @GetMapping
     @JsonView(Views.UserExpenses.class)
     public ExpensesPageDto list(@AuthenticationPrincipal User user,
+                                @RequestParam(value = "filterDay", required = false) String filter,
                                 @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Expenses> page = expensesService.findAllByUserAndFilter(user, pageable, Optional.empty());
+        Page<Expenses> page = expensesService.findAllByUserAndFilter(user, pageable, Optional.ofNullable(filter));
         return new ExpensesPageDto(page.getContent(), pageable.getPageNumber(), page.getTotalPages());
     }
 
