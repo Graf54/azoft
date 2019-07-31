@@ -75,7 +75,8 @@ public class ExpensesController {
                        @RequestParam("timeS") String time,
                        RedirectAttributes redirectAttributes,
                        @RequestHeader(required = false) String referer) {
-        expensesService.updateFormForm(expenses, DateUtil.getDate(date, time));
+        expenses.setDate(DateUtil.getDate(date, time));
+        expensesService.updateExpensesFromForm(expenses);
         redirectAttributes.addAttribute("idEdit", 0); // очишаем поле редактирования
         return ControllerUtils.redirect(redirectAttributes, referer, URL_REDIRECT);
     }

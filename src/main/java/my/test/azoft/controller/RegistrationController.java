@@ -49,7 +49,7 @@ public class RegistrationController {
             model.mergeAttributes(errors);
             return "registration";
         }
-        if (!userService.createUser(user)) {
+        if (!userService.createUser(user).isPresent()) {
             model.addAttribute("usernameError", "Пользователь с таким именем уже существует!");
             return "registration";
         }

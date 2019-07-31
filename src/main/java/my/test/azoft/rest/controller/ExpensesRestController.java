@@ -14,7 +14,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -49,19 +48,33 @@ public class ExpensesRestController {
 
 
     @PostMapping
-    public Map<String, String> create(@RequestBody Map<String, String> expenses) {
-        return null;
+    @JsonView(Views.UserExpenses.class)
+    public Expenses create(@RequestBody Expenses expenses,
+                           @AuthenticationPrincipal User user) {
+        expenses.setUser(user);
+        return expensesService.save(expenses);
     }
 
     @PutMapping("{id}")
-    public Map<String, String> update(@PathVariable String id, @RequestBody Map<String, String> expenses) {
-        return null;
-
+    @JsonView(Views.UserExpenses.class)
+    public Expenses update(@PathVariable("id") Expenses expenses,
+                           @AuthenticationPrincipal User user) {
+        Optional<Expenses> optionalExpenses = expensesService.updateExpensesFromForm(expenses);
+        if (optionalExpenses.isPresent()) {
+            return optionalExpenses.get();
+        } else {
+            throw new NotFoundException();
+        }
     }
 
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable String id) {
-
+    public void delete(@PathVariable int id) {
+        Optional<Expenses> optionalExpenses = expensesService.findById(id);
+        if (optionalExpenses.isPresent()) {
+            expensesService.delete(optionalExpenses.get());
+        } else {
+            throw new NotFoundException();
+        }
     }
 }

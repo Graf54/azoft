@@ -1,5 +1,6 @@
 package my.test.azoft.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -20,6 +21,7 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(Views.Id.class)
     private int id;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -27,10 +29,12 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonView(Views.User.class)
     private List<Role> roles;
 
     @Column(length = 50, unique = true)
     @NotBlank(message = "Username cannot be empty")
+    @JsonView(Views.IdName.class)
     private String username;
 
     @Column(length = 255)

@@ -32,16 +32,15 @@ public class UserService implements UserDetailsService {
         this.expensesService = expensesService;
     }
 
-    public boolean createUser(User user) {
+    public Optional<User> createUser(User user) {
         if (findByUsername(user.getUsername()).isPresent()) {
-            return false;
+            return Optional.empty();
         }
 
         Role userRole = roleService.findById(3).get();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Collections.singletonList(userRole));
-        save(user);
-        return true;
+        return Optional.of(save(user));
 
     }
 

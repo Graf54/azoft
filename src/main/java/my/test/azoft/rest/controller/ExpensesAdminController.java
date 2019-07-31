@@ -1,4 +1,4 @@
-package my.test.azoft.controller;
+package my.test.azoft.rest.controller;
 
 import my.test.azoft.model.Expenses;
 import my.test.azoft.model.User;
@@ -21,8 +21,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Date;
 import java.util.Optional;
 
-@Controller
-@RequestMapping("/expenses/admin/user")
+@RestController
+@RequestMapping("/api/expenses/admin/user")
 @PreAuthorize("hasAuthority('Admin')")
 public class ExpensesAdminController {
     @Autowired

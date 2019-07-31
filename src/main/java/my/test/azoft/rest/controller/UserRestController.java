@@ -6,6 +6,7 @@ import my.test.azoft.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,10 +35,11 @@ public class UserRestController {
         }
     }
 
-
-    @PostMapping
-    public Map<String, String> create(@RequestBody Map<String, String> expenses) {
-        return null;
+    @PostMapping("/create")
+    public User create(@Valid User user) {
+        Optional<User> optionalUser = userService.createUser(user);
+        //todo check present
+        return optionalUser.get();
     }
 
     @PutMapping("{id}")

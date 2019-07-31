@@ -47,7 +47,7 @@ public class ExpensesService {
         return expensesRepo.getOne(integer);
     }
 
-    public <S extends Expenses> S save(S s) {
+    public Expenses save(Expenses s) {
         return expensesRepo.save(s);
     }
 
@@ -62,18 +62,19 @@ public class ExpensesService {
         }
     }
 
-    public boolean updateFormForm(Expenses expFromForm, Date date) {
+    public Optional<Expenses> updateExpensesFromForm(Expenses expFromForm) {
         Optional<Expenses> expensesOptional = expensesRepo.findById(expFromForm.getId());
         if (expensesOptional.isPresent()) {
             Expenses expensesDB = expensesOptional.get();
-            expensesDB.setDate(date);
+            expensesDB.setDate(expFromForm.getDate());
             expensesDB.setComment(expFromForm.getComment());
             expensesDB.setDescription(expFromForm.getDescription());
             expensesDB.setValue(expFromForm.getValue());
-            expensesRepo.save(expensesDB);
-            return true;
+            save(expensesDB);
+            return Optional.of(expensesDB);
+        } else {
+            return expensesOptional;
         }
-        return false;
     }
 
     public Calculate getCalculate(int userId, Date first, Date last) {
