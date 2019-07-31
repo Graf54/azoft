@@ -22,9 +22,9 @@ import java.util.Date;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/expenses/admin/user")
+@RequestMapping("/api/admin/")
 @PreAuthorize("hasAuthority('Admin')")
-public class ExpensesAdminController {
+public class ExpensesAdminRestController {
     @Autowired
     private ExpensesService expensesService;
     @Autowired
@@ -39,14 +39,7 @@ public class ExpensesAdminController {
     }
 
     private void fillMain(Model model, Pageable pageable, int targetUserId) {
-        Optional<User> optionalUser = userService.findById(targetUserId);
-        if (optionalUser.isPresent()) {
-            Page<Expenses> page = expensesService.findAllByUserAndFilter(optionalUser.get(), pageable, Optional.empty());
-            model.addAttribute("page", page);
-            model.addAttribute("userId", targetUserId);
-            model.addAttribute("userName", optionalUser.get().getUsername());
-        }
-        //todo else
+
     }
 
 

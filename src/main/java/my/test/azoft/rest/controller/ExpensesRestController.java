@@ -60,11 +60,7 @@ public class ExpensesRestController {
     public Expenses update(@PathVariable("id") Expenses expenses,
                            @AuthenticationPrincipal User user) {
         Optional<Expenses> optionalExpenses = expensesService.updateExpensesFromForm(expenses);
-        if (optionalExpenses.isPresent()) {
-            return optionalExpenses.get();
-        } else {
-            throw new NotFoundException();
-        }
+        return optionalExpenses.orElseThrow(NotFoundException::new);
     }
 
 
