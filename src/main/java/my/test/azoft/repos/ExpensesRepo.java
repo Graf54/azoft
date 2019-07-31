@@ -36,4 +36,5 @@ public interface ExpensesRepo extends JpaRepository<Expenses, Integer> {
     Optional<Date> getLastDate(int userId);
 
 
+
 }
