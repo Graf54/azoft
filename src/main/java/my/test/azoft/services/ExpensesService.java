@@ -42,6 +42,9 @@ public class ExpensesService {
         return expensesRepo.findAllByUser(user, pageable);
     }
 
+    public Optional<Expenses> findByIdAndUser(int id, User user) {
+        return expensesRepo.findByIdAndUser(id, user);
+    }
 
     public Expenses getOne(Integer integer) {
         return expensesRepo.getOne(integer);

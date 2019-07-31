@@ -38,13 +38,9 @@ public class ExpensesRestController {
 
     @GetMapping("{id}")
     @JsonView(Views.UserExpenses.class)
-    public Expenses getOne(@PathVariable int id) {
-        Optional<Expenses> optional = expensesService.findById(id);
-        if (optional.isPresent()) {
-            return optional.get();
-        } else {
-            throw new NotFoundException();
-        }
+    public Expenses getOne(@PathVariable int id,
+                           @AuthenticationPrincipal User user) {
+        return expensesService.findByIdAndUser(id, user).orElseThrow(NotFoundException::new);
     }
 
 
