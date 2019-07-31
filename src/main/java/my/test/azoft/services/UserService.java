@@ -104,9 +104,9 @@ public class UserService implements UserDetailsService {
 
 
     public void updateUser(User userEditable, Map<String, String> form) {
-        Optional<User> maybeUser = userRepo.findById(userEditable.getId());
-        if (maybeUser.isPresent()) {
-            User userFromBd = maybeUser.get();
+        Optional<User> optionalUser = userRepo.findById(userEditable.getId());
+        if (optionalUser.isPresent()) {
+            User userFromBd = optionalUser.get();
             if (userEditable.getPassword() != null) {
                 userFromBd.setPassword(passwordEncoder.encode(userEditable.getPassword()));
             }
@@ -125,5 +125,18 @@ public class UserService implements UserDetailsService {
 
             userRepo.save(userFromBd);
         }
+    }
+
+    public Optional<User> updateUser(User userEditable) {
+        Optional<User> optionalUser = userRepo.findById(userEditable.getId());
+        if (optionalUser.isPresent()) {
+            User userFromBd = optionalUser.get();
+            if (userEditable.getPassword() != null) {
+                userFromBd.setPassword(passwordEncoder.encode(userEditable.getPassword()));
+            }
+            userFromBd.setUsername(userEditable.getUsername());
+            userRepo.save(userFromBd);
+        }
+        return optionalUser;
     }
 }
