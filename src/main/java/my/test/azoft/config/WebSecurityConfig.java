@@ -9,6 +9,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import sun.plugin.javascript.navig.Array;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -17,14 +21,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserService userService;
 
+    private String[] publicUrl = {
+            "/",
+            "/registration",
+            "/static/**"
+    };
+    private String[] restUrl = {
+            "/api/**"
+    };
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private AuthenticationEntryPoint entryPoint;
+    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                    .antMatchers("/","/api/**", "/registration", "/static/**").permitAll()
+                    .authorizeRequests()
+                    .antMatchers(publicUrl).permitAll()
                     .anyRequest().authenticated()
                 .and()
                     .formLogin()
@@ -36,7 +52,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logout()
                     .permitAll()
                 .and()
-                    .csrf().disable();    //todo think about this
+                    .csrf().ignoringAntMatchers(publicUrl).ignoringAntMatchers(restUrl)
+                .and()
+                    .httpBasic().authenticationEntryPoint(entryPoint);
+
+        ;
     }
 
     @Override
