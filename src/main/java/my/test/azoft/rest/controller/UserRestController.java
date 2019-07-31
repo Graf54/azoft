@@ -53,7 +53,7 @@ public class UserRestController {
     }
 
 
-    @PutMapping("{id}")
+    @PutMapping()
     @JsonView(Views.User.class)
     public User update(@RequestBody @Valid User user) {
         return userService.updateUser(user).orElseThrow(NotFoundException::new);
