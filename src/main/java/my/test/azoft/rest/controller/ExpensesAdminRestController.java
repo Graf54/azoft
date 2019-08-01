@@ -1,11 +1,12 @@
 package my.test.azoft.rest.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import my.test.azoft.model.Expenses;
 import my.test.azoft.model.User;
+import my.test.azoft.model.Views;
 import my.test.azoft.rest.exception.NotFoundException;
 import my.test.azoft.services.ExpensesService;
 import my.test.azoft.services.UserService;
-import my.test.azoft.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ public class ExpensesAdminRestController {
     private UserService userService;
 
     @GetMapping("/user")
+    @JsonView(Views.UserExpenses.class)
     public Page<Expenses> expenses(@PageableDefault(sort = {"date", "id"}, direction = Sort.Direction.DESC) Pageable pageable,
                                    @RequestParam("userId") int userId,
                                    @RequestParam(value = "filter", required = false) String filter) {
@@ -35,13 +37,12 @@ public class ExpensesAdminRestController {
 
 
     @PutMapping("/edit")
-    public String edit(@ModelAttribute("expenses") Expenses expenses,
-                       @RequestParam("dateS") String date,
-                       @RequestParam("timeS") String time,
-                       @RequestParam("userId") int userId) {
-        expenses.setDate(DateUtil.getDate(date, time));
-        expensesService.updateExpensesFromForm(expenses);
-        return "redirect:/expenses/admin/user?id=" + userId;
+    @JsonView(Views.UserExpenses.class)
+    public Expenses edit(@RequestBody Expenses expenses,
+                         @RequestBody int userId) {
+        User user = userService.findById(userId).orElseThrow(NotFoundException::new);
+        expensesService.findByIdAndUser(expenses.getId(), user).orElseThrow(NotFoundException::new);
+        return expensesService.updateExpensesFromForm(expenses).orElseThrow(NotFoundException::new);
     }
 
     @DeleteMapping("/delete")
@@ -52,11 +53,11 @@ public class ExpensesAdminRestController {
 
 
     @PostMapping("/add")
+    @JsonView(Views.UserExpenses.class)
     public Expenses add(@RequestBody Expenses expenses,
                         @RequestBody int userId) {
         User user = userService.findById(userId).orElseThrow(NotFoundException::new);
         expenses.setUser(user);
-        expensesService.save(expenses);
-        return expenses;
+        return expensesService.save(expenses);
     }
 }
