@@ -2,6 +2,7 @@ package my.test.azoft.rest.controller;
 
 import my.test.azoft.model.Expenses;
 import my.test.azoft.model.User;
+import my.test.azoft.rest.exception.NotFoundException;
 import my.test.azoft.services.ExpensesService;
 import my.test.azoft.services.UserService;
 import my.test.azoft.util.DateUtil;
@@ -11,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -30,17 +30,15 @@ public class ExpensesAdminRestController {
     @Autowired
     private UserService userService;
 
-    @GetMapping()
-    public String expenses(Model model,
-                           @PageableDefault(sort = {"date", "id"}, direction = Sort.Direction.DESC) Pageable pageable,
-                           @RequestParam int id) {
-        fillMain(model, pageable, id);
-        return "expensesForAdmin";
+    @GetMapping("user/")
+    public Page<Expenses> expenses(@PageableDefault(sort = {"date", "id"}, direction = Sort.Direction.DESC) Pageable pageable,
+                                   @RequestParam("userId") int userId,
+                                   @RequestParam(value = "filter", required = false) String filter) {
+        User user = userService.findById(userId).orElseThrow(NotFoundException::new);
+        return expensesService.findAllByUserAndFilter(user, pageable, Optional.ofNullable(filter));
     }
 
-    private void fillMain(Model model, Pageable pageable, int targetUserId) {
-
-    }
+    
 
 
     @GetMapping("/edit")
