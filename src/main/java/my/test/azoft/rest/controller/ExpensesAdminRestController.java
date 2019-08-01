@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/admin/")
+@RequestMapping("/api/admin")
 @PreAuthorize("hasAuthority('Admin')")
 public class ExpensesAdminRestController {
     @Autowired
@@ -30,7 +30,7 @@ public class ExpensesAdminRestController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("user/")
+    @GetMapping("/user")
     public Page<Expenses> expenses(@PageableDefault(sort = {"date", "id"}, direction = Sort.Direction.DESC) Pageable pageable,
                                    @RequestParam("userId") int userId,
                                    @RequestParam(value = "filter", required = false) String filter) {
