@@ -103,21 +103,19 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public void updateUser(User userEditable, Map<String, String> form) {
+    public void updateUser(User userEditable, Map<String, String> formRoles) {
         Optional<User> optionalUser = userRepo.findById(userEditable.getId());
         if (optionalUser.isPresent()) {
             User userFromBd = optionalUser.get();
-            if (userEditable.getPassword() != null) {
-                userFromBd.setPassword(passwordEncoder.encode(userEditable.getPassword()));
-            }
+            setPass(userEditable, userEditable.getPassword());
             userFromBd.setUsername(userEditable.getUsername());
             userFromBd.getRoles().clear();
 
             // из формы берем роли, сравниваем с наличием в бд и добавляем юзеру если есть
             List<Role> roles = roleService.findAll();
-            for (String key : form.keySet()) {
+            for (String roleName : formRoles.keySet()) {
                 roles.stream()
-                        .filter(role -> role.getName().equalsIgnoreCase(key))
+                        .filter(role -> role.getName().equalsIgnoreCase(roleName))
                         .findFirst().
                         ifPresent(role -> userFromBd.getRoles().add(role));
             }
@@ -131,12 +129,16 @@ public class UserService implements UserDetailsService {
         Optional<User> optionalUser = userRepo.findById(userEditable.getId());
         if (optionalUser.isPresent()) {
             User userFromBd = optionalUser.get();
-            if (userEditable.getPassword() != null) {
-                userFromBd.setPassword(passwordEncoder.encode(userEditable.getPassword()));
-            }
+            setPass(userFromBd, userEditable.getPassword());
             userFromBd.setUsername(userEditable.getUsername());
             userRepo.save(userFromBd);
         }
         return optionalUser;
+    }
+
+    private void setPass(User userFromBd, String pass) {
+        if (pass != null && pass.isEmpty()) {
+            userFromBd.setPassword(passwordEncoder.encode(pass));
+        }
     }
 }
