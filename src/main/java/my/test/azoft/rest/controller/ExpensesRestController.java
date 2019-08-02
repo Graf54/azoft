@@ -56,8 +56,8 @@ public class ExpensesRestController {
     @JsonView(Views.UserExpenses.class)
     public Expenses update(@PathVariable("id") Expenses expenses,
                            @AuthenticationPrincipal User user) {
-        Optional<Expenses> optionalExpenses = expensesService.updateExpensesFromForm(expenses);
-        return optionalExpenses.orElseThrow(NotFoundException::new);
+        expensesService.findByIdAndUser(expenses.getId(), user).orElseThrow(NotFoundException::new);
+        return expensesService.updateExpensesFromForm(expenses).orElseThrow(NotFoundException::new);
     }
 
 
