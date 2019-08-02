@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +50,7 @@ public class UserRestController {
 
     @PostMapping("/create")
     @JsonView(Views.User.class)
+    @ResponseStatus(HttpStatus.CREATED)
     public User create(@RequestBody @Valid User user) {
         Optional<User> optionalUser = userService.createUser(user);
         return optionalUser.orElseThrow(AlreadyExistException::new);
