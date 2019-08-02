@@ -23,7 +23,7 @@ public class UserService implements UserDetailsService {
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
-    private final ExpensesService expensesService;
+    private final ExpensesService expensesService;//todo delete?
 
     public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder, RoleService roleService, ExpensesService expensesService) {
         this.userRepo = userRepo;
